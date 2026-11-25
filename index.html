@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Panel | Pemilihan Pegawai Ter-</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen">
+  <!-- Login Screen -->
+  <div id="pinScreen" class="min-h-screen flex items-center justify-center px-4">
+    <div class="bg-white rounded-2xl shadow-md border border-slate-200 p-6 w-full max-w-sm">
+      <h1 class="text-xl font-bold text-slate-800">Admin Panel Pemilihan</h1>
+      <p class="text-xs text-slate-500 mt-1 mb-4">Masukkan PIN Admin untuk mengakses rekap & kelola data.</p>
+      <input id="pinInput" type="password" placeholder="PIN Admin"
+        class="w-full border border-slate-300 rounded-xl px-4 py-2.5 mb-3 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      <button id="pinBtn" onclick="loadAdmin()"
+        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-xl transition">
+        Masuk Admin
+      </button>
+      <p id="pinErr" class="text-red-600 text-xs mt-2 hidden"></p>
+    </div>
+  </div>
+
+  <!-- Dashboard -->
+  <div id="dashboard" class="hidden max-w-6xl mx-auto px-4 py-6">
+    <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
+      <div>
+        <h1 class="text-2xl font-bold text-slate-800">Dashboard Admin — Pegawai Ter-</h1>
+        <p id="summaryText" class="text-sm text-slate-500"></p>
+      </div>
+      <div class="flex gap-2">
+        <button onclick="refreshData()" class="bg-white border border-slate-300 hover:bg-slate-50 px-4 py-2 rounded-xl text-sm font-semibold">Refresh</button>
+        <button onclick="resetAllVotes()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl text-sm font-semibold">Reset Semua Vote</button>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="flex flex-wrap gap-2 mb-5">
+      <button onclick="switchTab('kat')" id="tab-kat" class="tab-btn bg-blue-600 text-white px-4 py-2 rounded-xl text-sm font-semibold">Rekap per Kategori</button>
+      <button onclick="switchTab('peg')" id="tab-peg" class="tab-btn bg-white text-slate-700 border border-slate-200 px-4 py-2 rounded-xl text-sm font-semibold">Rekap per Pegawai</button>
+      <button onclick="switchTab('mon')" id="tab-mon" class="tab-btn bg-white text-slate-700 border border-slate-200 px-4 py-2 rounded-xl text-sm font-semibold">Monitoring Partisipasi</button>
+      <button onclick="switchTab('crud')" id="tab-crud" class="tab-btn bg-white text-slate-700 border border-slate-200 px-4 py-2 rounded-xl text-sm font-semibold">Kelola Data (CRUD)</button>
+    </div>
+
+    <!-- TAB 1: REKAP PER KATEGORI -->
+    <div id="panel-kat" class="tab-panel bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+      <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+        <h2 class="font-bold text-lg">Peringkat Lengkap per Kategori</h2>
+        <select id="filterKategori" onchange="renderRekapKategori()" class="border border-slate-300 rounded-xl px-3 py-2 text-sm"></select>
+      </div>
+      <div id="rekapKategoriBody" class="overflow-x-auto"></div>
+    </div>
+
+    <!-- TAB 2: REKAP PER PEGAWAI -->
+    <div id="panel-peg" class="tab-panel hidden bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+      <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+        <h2 class="font-bold text-lg">Perolehan "Ter-" per Pegawai</h2>
+        <input id="searchRekapPegawai" oninput="renderRekapPegawai()" placeholder="Cari nama pegawai..."
+          class="border border-slate-300 rounded-xl px-3 py-2 text-sm w-64" />
+      </div>
+      <div id="rekapPegawaiBody" class="space-y-3"></div>
+    </div>
+
+    <!-- TAB 3: MONITORING PARTISIPASI -->
+    <div id="panel-mon" class="tab-panel hidden space-y-4">
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-3">
+          <div>
+            <h2 class="font-bold text-lg">Progres Partisipasi</h2>
+            <p id="monStats" class="text-sm text-slate-600"></p>
+          </div>
+          <button onclick="copyBelumMemilih()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-sm font-semibold">
+            Copy Daftar Belum Memilih (WA)
+          </button>
+        </div>
+        <div class="w-full bg-slate-200 rounded-full h-3">
+          <div id="monBar" class="bg-blue-600 h-3 rounded-full transition-all" style="width:0%"></div>
+        </div>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-4">
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+          <h3 class="font-bold text-red-600 mb-3">Belum Memilih (<span id="countBelum">0</span>)</h3>
+          <div id="listBelum" class="divide-y divide-slate-100 max-h-96 overflow-y-auto text-sm"></div>
+        </div>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+          <h3 class="font-bold text-emerald-600 mb-3">Sudah Memilih (<span id="countSudah">0</span>)</h3>
+          <div id="listSudah" class="divide-y divide-slate-100 max-h-96 overflow-y-auto text-sm"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: CRUD -->
+    <div id="panel-crud" class="tab-panel hidden space-y-6">
+      <!-- CRUD Kategori -->
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+        <h2 class="font-bold text-lg mb-3">Kelola Kategori "Ter-"</h2>
+        <div class="grid md:grid-cols-4 gap-2 mb-4">
+          <input id="katId" placeholder="ID (mis: K01)" class="border rounded-xl px-3 py-2 text-sm" />
+          <input id="katNama" placeholder="Nama Kategori (mis: Teramah)" class="border rounded-xl px-3 py-2 text-sm" />
+          <input id="katDesk" placeholder="Deskripsi singkat (opsional)" class="border rounded-xl px-3 py-2 text-sm" />
+          <button onclick="addKategori()" class="bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-4 py-2 text-sm font-semibold">+ Tambah Kategori</button>
+        </div>
+        <div id="crudKategoriList" class="overflow-x-auto"></div>
+      </div>
+
+      <!-- CRUD Pegawai -->
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+        <h2 class="font-bold text-lg mb-3">Kelola Pegawai (Tambah Dummy / Edit / Hapus)</h2>
+        <div class="grid md:grid-cols-3 gap-2 mb-4">
+          <input id="pegNip" placeholder="NIP 9 Digit / 5 Digit Dummy" class="border rounded-xl px-3 py-2 text-sm" />
+          <input id="pegNama" placeholder="Nama Lengkap Pegawai" class="border rounded-xl px-3 py-2 text-sm" />
+          <button onclick="addPegawai()" class="bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-4 py-2 text-sm font-semibold">+ Tambah Pegawai</button>
+        </div>
+        <input id="searchCrudPegawai" oninput="renderCrudPegawai()" placeholder="Filter nama/NIP..." class="border rounded-xl px-3 py-1.5 text-sm mb-3 w-64" />
+        <div id="crudPegawaiList" class="overflow-x-auto max-h-80 overflow-y-auto"></div>
+      </div>
+
+      <!-- CRUD Edit Vote -->
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+        <h2 class="font-bold text-lg mb-3">Edit Data Suara Masuk</h2>
+        <input id="searchCrudVotes" oninput="renderCrudVotes()" placeholder="Cari pemilih / terpilih..." class="border rounded-xl px-3 py-1.5 text-sm mb-3 w-64" />
+        <div id="crudVotesList" class="overflow-x-auto max-h-80 overflow-y-auto"></div>
+      </div>
+    </div>
+  </div>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pemilihan Pegawai Ter- | BPS Provinsi Kepulauan Bangka Belitung</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen">
+  <div class="max-w-2xl mx-auto px-4 py-8">
+    <!-- Header -->
+    <div class="bg-gradient-to-r from-blue-700 to-indigo-700 text-white rounded-2xl p-6 shadow-md mb-6">
+      <p class="text-xs uppercase tracking-wider text-blue-100 font-semibold">BPS Provinsi Kepulauan Bangka Belitung</p>
+      <h1 class="text-2xl font-bold mt-1">Pemilihan Pegawai "Ter-"</h1>
+      <p class="text-sm text-blue-100 mt-1">Suara Anda bersifat rahasia dan hanya bisa dikirim 1 kali.</p>
+    </div>
+
+    <!-- Login Card -->
+    <div id="loginCard" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+      <label class="block text-sm font-semibold text-slate-700 mb-2">Masukkan 5 Digit Terakhir NIP Lama Anda</label>
+      <p class="text-xs text-slate-500 mb-3">Contoh: jika NIP lama <code>340057184</code>, cukup ketik <code>57184</code>.</p>
+      <div class="flex gap-2">
+        <input id="nipInput" type="text" inputmode="numeric" maxlength="5" placeholder="57184"
+          class="flex-1 border border-slate-300 rounded-xl px-4 py-3 text-lg tracking-widest font-mono focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        <button id="loginBtn" onclick="doLogin()"
+          class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-xl transition">
+          Masuk
+        </button>
+      </div>
+      <p id="loginErr" class="text-red-600 text-sm mt-3 hidden"></p>
+    </div>
+
+    <!-- Already Voted Card -->
+    <div id="doneCard" class="hidden bg-white rounded-2xl shadow-sm border border-emerald-200 p-8 text-center">
+      <div class="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-2xl font-bold">✓</div>
+      <h2 class="text-xl font-bold text-slate-800 mt-4">Terima Kasih, <span id="doneName"></span>!</h2>
+      <p class="text-slate-600 text-sm mt-2">Suara Anda sudah tercatat di sistem. Sampai jumpa di pengumuman hasil!</p>
+    </div>
+
+    <!-- Voting Form -->
+    <div id="voteCard" class="hidden space-y-5">
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 flex items-center justify-between">
+        <div>
+          <p class="text-xs text-slate-500">Pemilih Terverifikasi</p>
+          <p id="voterName" class="font-bold text-slate-800"></p>
+        </div>
+        <span id="progressBadge" class="text-xs font-semibold bg-blue-50 text-blue-700 px-3 py-1 rounded-full">0 / 0 terisi</span>
+      </div>
+
+      <div id="categoriesContainer" class="space-y-4"></div>
+
+      <div class="pt-2 pb-10">
+        <button id="submitBtn" onclick="confirmSubmit()"
+          class="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 text-white font-bold py-3.5 rounded-xl shadow-sm transition">
+          Kirim Semua Pilihan
+        </button>
+        <p id="submitErr" class="text-red-600 text-sm text-center mt-2 hidden"></p>
+      </div>
+    </div>
+  </div>
+
+<script>
+  const API_URL = "https://script.google.com/macros/s/AKfycbwAJUttNpA_J_mNcbRTQxHiC_72VoCCHjhYuVtk4VULPFYgSqU0wVXQ_etPTZDX-NPV/exec";
+  const ALLOW_SELF_VOTE = false; // Ubah ke true jika boleh memilih diri sendiri
+
+  let currentUser = null;
+  let allPegawai = [];
+  let allKategori = [];
+  let selectedChoices = {}; // { idKategori: namaTerpilih }
+
+  function esc(str) {
+    return String(str || "")
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+
+  window.addEventListener("DOMContentLoaded", () => {
+    const params = new URLSearchParams(window.location.search);
+    const nipParam = (params.get("nip") || "").trim().slice(-5);
+    if (nipParam.length === 5) {
+      document.getElementById("nipInput").value = nipParam;
+      doLogin();
+    }
+    document.getElementById("nipInput").addEventListener("keydown", e => {
+      if (e.key === "Enter") doLogin();
+    });
+  });
+
+  async function doLogin() {
+    const nip5 = document.getElementById("nipInput").value.trim();
+    const errEl = document.getElementById("loginErr");
+    const btn = document.getElementById("loginBtn");
+    errEl.classList.add("hidden");
+
+    if (!/^\d{5}$/.test(nip5)) {
+      errEl.textContent = "Harap masukkan 5 angka terakhir NIP lama Anda.";
+      errEl.classList.remove("hidden");
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = "Mengecek...";
+    try {
+      const res = await fetch(`${API_URL}?action=init&nip=${encodeURIComponent(nip5)}`);
+      const data = await res.json();
+      if (!data.ok) {
+        errEl.textContent = data.error || "Gagal memverifikasi NIP.";
+        errEl.classList.remove("hidden");
+        return;
+      }
+
+      currentUser = data.user;
+      allPegawai = data.pegawai;
+      allKategori = data.kategori;
+
+      document.getElementById("loginCard").classList.add("hidden");
+
+      if (currentUser.sudahVote) {
+        document.getElementById("doneName").textContent = currentUser.nama;
+        document.getElementById("doneCard").classList.remove("hidden");
+        return;
+      }
+
+      if (!allKategori.length) {
+        errEl.textContent = "Belum ada kategori yang tersedia. Hubungi panitia.";
+        errEl.classList.remove("hidden");
+        document.getElementById("loginCard").classList.remove("hidden");
+        return;
+      }
+
+      document.getElementById("voterName").textContent = currentUser.nama;
+      renderCategories();
+      document.getElementById("voteCard").classList.remove("hidden");
+    } catch (e) {
+      errEl.textContent = "Gagal terhubung ke server. Cek koneksi internet Anda.";
+      errEl.classList.remove("hidden");
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Masuk";
+    }
+  }
+
+  function renderCategories() {
+    const container = document.getElementById("categoriesContainer");
+    container.innerHTML = "";
+    const candidates = ALLOW_SELF_VOTE
+      ? allPegawai
+      : allPegawai.filter(p => p.nip5 !== currentUser.nip5);
+
+    allKategori.forEach((kat, idx) => {
+      const card = document.createElement("div");
+      card.className = "bg-white rounded-2xl shadow-sm border border-slate-200 p-5 relative";
+      card.innerHTML = `
+        <div class="flex items-start justify-between gap-2 mb-3">
+          <div>
+            <span class="text-xs font-bold text-blue-600">Kategori ${idx + 1}</span>
+            <h3 class="text-lg font-bold text-slate-800">${esc(kat.nama)}</h3>
+            ${kat.deskripsi ? `<p class="text-xs text-slate-500 mt-0.5">${esc(kat.deskripsi)}</p>` : ""}
+          </div>
+          <span id="check-${esc(kat.id)}" class="hidden text-xs font-semibold bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-full">Terpilih</span>
+        </div>
+        <div class="relative">
+          <input type="text" autocomplete="off"
+            id="search-${esc(kat.id)}"
+            placeholder="Ketik untuk mencari nama pegawai..."
+            class="w-full border border-slate-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          <div id="list-${esc(kat.id)}"
+            class="hidden absolute z-20 left-0 right-0 mt-1 bg-white border border-slate-200 rounded-xl shadow-lg max-h-56 overflow-y-auto divide-y divide-slate-100">
+          </div>
+        </div>
+      `;
+      container.appendChild(card);
+
+      const inputEl = card.querySelector(`#search-${CSS.escape(kat.id)}`);
+      const listEl = card.querySelector(`#list-${CSS.escape(kat.id)}`);
+      const checkEl = card.querySelector(`#check-${CSS.escape(kat.id)}`);
+
+      function renderOptions(keyword) {
+        const kw = keyword.toLowerCase();
+        const filtered = candidates.filter(p => p.nama.toLowerCase().includes(kw));
+        listEl.innerHTML = "";
+        if (!filtered.length) {
+          listEl.innerHTML = `<div class="px-4 py-3 text-xs text-slate-400">Nama tidak ditemukan</div>`;
+          return;
+        }
+        filtered.forEach(p => {
+          const item = document.createElement("button");
+          item.type = "button";
+          item.className = "w-full text-left px-4 py-2.5 text-sm hover:bg-blue-50 transition";
+          item.textContent = p.nama;
+          item.addEventListener("mousedown", (ev) => {
+            ev.preventDefault();
+            selectedChoices[kat.id] = p.nama;
+            inputEl.value = p.nama;
+            listEl.classList.add("hidden");
+            checkEl.classList.remove("hidden");
+            updateProgress();
+          });
+          listEl.appendChild(item);
+        });
+      }
+
+      inputEl.addEventListener("focus", () => {
+        renderOptions(inputEl.value);
+        listEl.classList.remove("hidden");
+      });
+      inputEl.addEventListener("input", () => {
+        if (selectedChoices[kat.id] && inputEl.value !== selectedChoices[kat.id]) {
+          delete selectedChoices[kat.id];
+          checkEl.classList.add("hidden");
+          updateProgress();
+        }
+        renderOptions(inputEl.value);
+        listEl.classList.remove("hidden");
+      });
+      inputEl.addEventListener("blur", () => {
+        setTimeout(() => listEl.classList.add("hidden"), 150);
+      });
+    });
+
+    updateProgress();
+  }
+
+  function updateProgress() {
+    const filled = Object.keys(selectedChoices).length;
+    const total = allKategori.length;
+    document.getElementById("progressBadge").textContent = `${filled} / ${total} terisi`;
+  }
+
+  async function confirmSubmit() {
+    const errEl = document.getElementById("submitErr");
+    errEl.classList.add("hidden");
+
+    const missing = allKategori.filter(k => !selectedChoices[k.id]);
+    if (missing.length > 0) {
+      errEl.textContent = `Masih ada ${missing.length} kategori yang belum dipilih (misal: ${missing[0].nama}).`;
+      errEl.classList.remove("hidden");
+      return;
+    }
+
+    if (!confirm("Yakin ingin mengirim semua pilihan? Setelah dikirim, suara tidak dapat diubah.")) return;
+
+    const btn = document.getElementById("submitBtn");
+    btn.disabled = true;
+    btn.textContent = "Menyimpan suara...";
+
+    try {
+      const choices = allKategori.map(k => ({
+        idKategori: k.id,
+        namaTerpilih: selectedChoices[k.id]
+      }));
+
+      const res = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({
+          action: "submit_vote",
+          nip5: currentUser.nip5,
+          choices: choices
+        })
+      });
+      const data = await res.json();
+      if (!data.ok) {
+        errEl.textContent = data.error || "Gagal menyimpan suara.";
+        errEl.classList.remove("hidden");
+        btn.disabled = false;
+        btn.textContent = "Kirim Semua Pilihan";
+        return;
+      }
+
+      document.getElementById("voteCard").classList.add("hidden");
+      document.getElementById("doneName").textContent = currentUser.nama;
+      document.getElementById("doneCard").classList.remove("hidden");
+    } catch (e) {
+      errEl.textContent = "Terjadi kesalahan jaringan. Coba kirim ulang.";
+      errEl.classList.remove("hidden");
+      btn.disabled = false;
+      btn.textContent = "Kirim Semua Pilihan";
+    }
+  }
+</script>
+</body>
+</html>
