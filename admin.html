@@ -3,70 +3,133 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pemilihan Pegawai Ter- | BPS Provinsi Kepulauan Bangka Belitung</title>
+  <title>Admin Panel | Pemilihan Pegawai Ter-</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen">
-  <div class="max-w-2xl mx-auto px-4 py-8">
-    <!-- Header -->
-    <div class="bg-gradient-to-r from-blue-700 to-indigo-700 text-white rounded-2xl p-6 shadow-md mb-6">
-      <p class="text-xs uppercase tracking-wider text-blue-100 font-semibold">BPS Provinsi Kepulauan Bangka Belitung</p>
-      <h1 class="text-2xl font-bold mt-1">Pemilihan Pegawai "Ter-"</h1>
-      <p class="text-sm text-blue-100 mt-1">Suara Anda bersifat rahasia dan hanya bisa dikirim 1 kali.</p>
+<body class="bg-slate-100 text-slate-800 min-h-screen">
+  <!-- Login Screen -->
+  <div id="pinScreen" class="min-h-screen flex items-center justify-center px-4">
+    <div class="bg-white rounded-2xl shadow-md border border-slate-200 p-6 w-full max-w-sm">
+      <h1 class="text-xl font-bold text-slate-800">Admin Panel Pemilihan</h1>
+      <p class="text-xs text-slate-500 mt-1 mb-4">Masukkan PIN Admin untuk mengakses rekap & kelola data.</p>
+      <input id="pinInput" type="password" placeholder="PIN Admin"
+        class="w-full border border-slate-300 rounded-xl px-4 py-2.5 mb-3 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      <button id="pinBtn" onclick="loadAdmin()"
+        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-xl transition">
+        Masuk Admin
+      </button>
+      <p id="pinErr" class="text-red-600 text-xs mt-2 hidden"></p>
     </div>
+  </div>
 
-    <!-- Login Card -->
-    <div id="loginCard" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-      <label class="block text-sm font-semibold text-slate-700 mb-2">Masukkan 5 Digit Terakhir NIP Lama Anda</label>
-      <p class="text-xs text-slate-500 mb-3">Contoh: jika NIP lama <code>340057184</code>, cukup ketik <code>57184</code>.</p>
+  <!-- Dashboard -->
+  <div id="dashboard" class="hidden max-w-6xl mx-auto px-4 py-6">
+    <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
+      <div>
+        <h1 class="text-2xl font-bold text-slate-800">Dashboard Admin — Pegawai Ter-</h1>
+        <p id="summaryText" class="text-sm text-slate-500"></p>
+      </div>
       <div class="flex gap-2">
-        <input id="nipInput" type="text" inputmode="numeric" maxlength="5" placeholder="57184"
-          class="flex-1 border border-slate-300 rounded-xl px-4 py-3 text-lg tracking-widest font-mono focus:outline-none focus:ring-2 focus:ring-blue-500" />
-        <button id="loginBtn" onclick="doLogin()"
-          class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-xl transition">
-          Masuk
-        </button>
+        <button onclick="refreshData()" class="bg-white border border-slate-300 hover:bg-slate-50 px-4 py-2 rounded-xl text-sm font-semibold">Refresh</button>
+        <button onclick="resetAllVotes()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl text-sm font-semibold">Reset Semua Vote</button>
       </div>
-      <p id="loginErr" class="text-red-600 text-sm mt-3 hidden"></p>
     </div>
 
-    <!-- Already Voted Card -->
-    <div id="doneCard" class="hidden bg-white rounded-2xl shadow-sm border border-emerald-200 p-8 text-center">
-      <div class="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-2xl font-bold">✓</div>
-      <h2 class="text-xl font-bold text-slate-800 mt-4">Terima Kasih, <span id="doneName"></span>!</h2>
-      <p class="text-slate-600 text-sm mt-2">Suara Anda sudah tercatat di sistem. Sampai jumpa di pengumuman hasil!</p>
+    <!-- Tabs -->
+    <div class="flex flex-wrap gap-2 mb-5">
+      <button onclick="switchTab('kat')" id="tab-kat" class="tab-btn bg-blue-600 text-white px-4 py-2 rounded-xl text-sm font-semibold">Rekap per Kategori</button>
+      <button onclick="switchTab('peg')" id="tab-peg" class="tab-btn bg-white text-slate-700 border border-slate-200 px-4 py-2 rounded-xl text-sm font-semibold">Rekap per Pegawai</button>
+      <button onclick="switchTab('mon')" id="tab-mon" class="tab-btn bg-white text-slate-700 border border-slate-200 px-4 py-2 rounded-xl text-sm font-semibold">Monitoring Partisipasi</button>
+      <button onclick="switchTab('crud')" id="tab-crud" class="tab-btn bg-white text-slate-700 border border-slate-200 px-4 py-2 rounded-xl text-sm font-semibold">Kelola Data (CRUD)</button>
     </div>
 
-    <!-- Voting Form -->
-    <div id="voteCard" class="hidden space-y-5">
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 flex items-center justify-between">
-        <div>
-          <p class="text-xs text-slate-500">Pemilih Terverifikasi</p>
-          <p id="voterName" class="font-bold text-slate-800"></p>
+    <!-- TAB 1: REKAP PER KATEGORI -->
+    <div id="panel-kat" class="tab-panel bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+      <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+        <h2 class="font-bold text-lg">Peringkat Lengkap per Kategori</h2>
+        <select id="filterKategori" onchange="renderRekapKategori()" class="border border-slate-300 rounded-xl px-3 py-2 text-sm"></select>
+      </div>
+      <div id="rekapKategoriBody" class="overflow-x-auto"></div>
+    </div>
+
+    <!-- TAB 2: REKAP PER PEGAWAI -->
+    <div id="panel-peg" class="tab-panel hidden bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+      <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+        <h2 class="font-bold text-lg">Perolehan "Ter-" per Pegawai</h2>
+        <input id="searchRekapPegawai" oninput="renderRekapPegawai()" placeholder="Cari nama pegawai..."
+          class="border border-slate-300 rounded-xl px-3 py-2 text-sm w-64" />
+      </div>
+      <div id="rekapPegawaiBody" class="space-y-3"></div>
+    </div>
+
+    <!-- TAB 3: MONITORING PARTISIPASI -->
+    <div id="panel-mon" class="tab-panel hidden space-y-4">
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-3">
+          <div>
+            <h2 class="font-bold text-lg">Progres Partisipasi</h2>
+            <p id="monStats" class="text-sm text-slate-600"></p>
+          </div>
+          <button onclick="copyBelumMemilih()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-sm font-semibold">
+            Copy Daftar Belum Memilih (WA)
+          </button>
         </div>
-        <span id="progressBadge" class="text-xs font-semibold bg-blue-50 text-blue-700 px-3 py-1 rounded-full">0 / 0 terisi</span>
+        <div class="w-full bg-slate-200 rounded-full h-3">
+          <div id="monBar" class="bg-blue-600 h-3 rounded-full transition-all" style="width:0%"></div>
+        </div>
       </div>
 
-      <div id="categoriesContainer" class="space-y-4"></div>
+      <div class="grid md:grid-cols-2 gap-4">
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+          <h3 class="font-bold text-red-600 mb-3">Belum Memilih (<span id="countBelum">0</span>)</h3>
+          <div id="listBelum" class="divide-y divide-slate-100 max-h-96 overflow-y-auto text-sm"></div>
+        </div>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+          <h3 class="font-bold text-emerald-600 mb-3">Sudah Memilih (<span id="countSudah">0</span>)</h3>
+          <div id="listSudah" class="divide-y divide-slate-100 max-h-96 overflow-y-auto text-sm"></div>
+        </div>
+      </div>
+    </div>
 
-      <div class="pt-2 pb-10">
-        <button id="submitBtn" onclick="confirmSubmit()"
-          class="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 text-white font-bold py-3.5 rounded-xl shadow-sm transition">
-          Kirim Semua Pilihan
-        </button>
-        <p id="submitErr" class="text-red-600 text-sm text-center mt-2 hidden"></p>
+    <!-- TAB 4: CRUD -->
+    <div id="panel-crud" class="tab-panel hidden space-y-6">
+      <!-- CRUD Kategori -->
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+        <h2 class="font-bold text-lg mb-3">Kelola Kategori "Ter-"</h2>
+        <div class="grid md:grid-cols-4 gap-2 mb-4">
+          <input id="katId" placeholder="ID (mis: K01)" class="border rounded-xl px-3 py-2 text-sm" />
+          <input id="katNama" placeholder="Nama Kategori (mis: Teramah)" class="border rounded-xl px-3 py-2 text-sm" />
+          <input id="katDesk" placeholder="Deskripsi singkat (opsional)" class="border rounded-xl px-3 py-2 text-sm" />
+          <button onclick="addKategori()" class="bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-4 py-2 text-sm font-semibold">+ Tambah Kategori</button>
+        </div>
+        <div id="crudKategoriList" class="overflow-x-auto"></div>
+      </div>
+
+      <!-- CRUD Pegawai -->
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+        <h2 class="font-bold text-lg mb-3">Kelola Pegawai (Tambah Dummy / Edit / Hapus)</h2>
+        <div class="grid md:grid-cols-3 gap-2 mb-4">
+          <input id="pegNip" placeholder="NIP 9 Digit / 5 Digit Dummy" class="border rounded-xl px-3 py-2 text-sm" />
+          <input id="pegNama" placeholder="Nama Lengkap Pegawai" class="border rounded-xl px-3 py-2 text-sm" />
+          <button onclick="addPegawai()" class="bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-4 py-2 text-sm font-semibold">+ Tambah Pegawai</button>
+        </div>
+        <input id="searchCrudPegawai" oninput="renderCrudPegawai()" placeholder="Filter nama/NIP..." class="border rounded-xl px-3 py-1.5 text-sm mb-3 w-64" />
+        <div id="crudPegawaiList" class="overflow-x-auto max-h-80 overflow-y-auto"></div>
+      </div>
+
+      <!-- CRUD Edit Vote -->
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+        <h2 class="font-bold text-lg mb-3">Edit Data Suara Masuk</h2>
+        <input id="searchCrudVotes" oninput="renderCrudVotes()" placeholder="Cari pemilih / terpilih..." class="border rounded-xl px-3 py-1.5 text-sm mb-3 w-64" />
+        <div id="crudVotesList" class="overflow-x-auto max-h-80 overflow-y-auto"></div>
       </div>
     </div>
   </div>
 
 <script>
   const API_URL = "https://script.google.com/macros/s/AKfycbxWlpDLHNbsAByL6hytD6BU0e4tPCd8enb8kwkOjzg/dev";
-  const ALLOW_SELF_VOTE = false; // Ubah ke true jika boleh memilih diri sendiri
-
-  let currentUser = null;
-  let allPegawai = [];
-  let allKategori = [];
-  let selectedChoices = {}; // { idKategori: namaTerpilih }
+  let ADMIN_PIN = "";
+  let DB = { pegawai: [], kategori: [], votes: [] };
 
   function esc(str) {
     return String(str || "")
@@ -74,209 +137,322 @@
       .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
   }
 
-  window.addEventListener("DOMContentLoaded", () => {
-    const params = new URLSearchParams(window.location.search);
-    const nipParam = (params.get("nip") || "").trim().slice(-5);
-    if (nipParam.length === 5) {
-      document.getElementById("nipInput").value = nipParam;
-      doLogin();
-    }
-    document.getElementById("nipInput").addEventListener("keydown", e => {
-      if (e.key === "Enter") doLogin();
-    });
+  document.getElementById("pinInput").addEventListener("keydown", e => {
+    if (e.key === "Enter") loadAdmin();
   });
 
-  async function doLogin() {
-    const nip5 = document.getElementById("nipInput").value.trim();
-    const errEl = document.getElementById("loginErr");
-    const btn = document.getElementById("loginBtn");
+  async function loadAdmin() {
+    ADMIN_PIN = document.getElementById("pinInput").value.trim();
+    const errEl = document.getElementById("pinErr");
     errEl.classList.add("hidden");
-
-    if (!/^\d{5}$/.test(nip5)) {
-      errEl.textContent = "Harap masukkan 5 angka terakhir NIP lama Anda.";
+    const ok = await refreshData();
+    if (ok) {
+      document.getElementById("pinScreen").classList.add("hidden");
+      document.getElementById("dashboard").classList.remove("hidden");
+    } else {
+      errEl.textContent = "PIN salah atau gagal terhubung.";
       errEl.classList.remove("hidden");
-      return;
-    }
-
-    btn.disabled = true;
-    btn.textContent = "Mengecek...";
-    try {
-      const res = await fetch(`${API_URL}?action=init&nip=${encodeURIComponent(nip5)}`);
-      const data = await res.json();
-      if (!data.ok) {
-        errEl.textContent = data.error || "Gagal memverifikasi NIP.";
-        errEl.classList.remove("hidden");
-        return;
-      }
-
-      currentUser = data.user;
-      allPegawai = data.pegawai;
-      allKategori = data.kategori;
-
-      document.getElementById("loginCard").classList.add("hidden");
-
-      if (currentUser.sudahVote) {
-        document.getElementById("doneName").textContent = currentUser.nama;
-        document.getElementById("doneCard").classList.remove("hidden");
-        return;
-      }
-
-      if (!allKategori.length) {
-        errEl.textContent = "Belum ada kategori yang tersedia. Hubungi panitia.";
-        errEl.classList.remove("hidden");
-        document.getElementById("loginCard").classList.remove("hidden");
-        return;
-      }
-
-      document.getElementById("voterName").textContent = currentUser.nama;
-      renderCategories();
-      document.getElementById("voteCard").classList.remove("hidden");
-    } catch (e) {
-      errEl.textContent = "Gagal terhubung ke server. Cek koneksi internet Anda.";
-      errEl.classList.remove("hidden");
-    } finally {
-      btn.disabled = false;
-      btn.textContent = "Masuk";
     }
   }
 
-  function renderCategories() {
-    const container = document.getElementById("categoriesContainer");
-    container.innerHTML = "";
-    const candidates = ALLOW_SELF_VOTE
-      ? allPegawai
-      : allPegawai.filter(p => p.nip5 !== currentUser.nip5);
+  async function refreshData() {
+    try {
+      const res = await fetch(`${API_URL}?action=admin_data&pin=${encodeURIComponent(ADMIN_PIN)}`);
+      const data = await res.json();
+      if (!data.ok) return false;
+      DB = data;
+      renderAll();
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
 
-    allKategori.forEach((kat, idx) => {
-      const card = document.createElement("div");
-      card.className = "bg-white rounded-2xl shadow-sm border border-slate-200 p-5 relative";
-      card.innerHTML = `
-        <div class="flex items-start justify-between gap-2 mb-3">
-          <div>
-            <span class="text-xs font-bold text-blue-600">Kategori ${idx + 1}</span>
-            <h3 class="text-lg font-bold text-slate-800">${esc(kat.nama)}</h3>
-            ${kat.deskripsi ? `<p class="text-xs text-slate-500 mt-0.5">${esc(kat.deskripsi)}</p>` : ""}
-          </div>
-          <span id="check-${esc(kat.id)}" class="hidden text-xs font-semibold bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-full">Terpilih</span>
-        </div>
-        <div class="relative">
-          <input type="text" autocomplete="off"
-            id="search-${esc(kat.id)}"
-            placeholder="Ketik untuk mencari nama pegawai..."
-            class="w-full border border-slate-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
-          <div id="list-${esc(kat.id)}"
-            class="hidden absolute z-20 left-0 right-0 mt-1 bg-white border border-slate-200 rounded-xl shadow-lg max-h-56 overflow-y-auto divide-y divide-slate-100">
-          </div>
-        </div>
-      `;
-      container.appendChild(card);
+  async function postAdmin(payload) {
+    const res = await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({ ...payload, pin: ADMIN_PIN })
+    });
+    const data = await res.json();
+    if (!data.ok) {
+      alert("Gagal: " + (data.error || "Unknown error"));
+      return false;
+    }
+    await refreshData();
+    return true;
+  }
 
-      const inputEl = card.querySelector(`#search-${CSS.escape(kat.id)}`);
-      const listEl = card.querySelector(`#list-${CSS.escape(kat.id)}`);
-      const checkEl = card.querySelector(`#check-${CSS.escape(kat.id)}`);
+  function switchTab(id) {
+    document.querySelectorAll(".tab-panel").forEach(el => el.classList.add("hidden"));
+    document.getElementById("panel-" + id).classList.remove("hidden");
+    document.querySelectorAll(".tab-btn").forEach(btn => {
+      btn.className = "tab-btn bg-white text-slate-700 border border-slate-200 px-4 py-2 rounded-xl text-sm font-semibold";
+    });
+    document.getElementById("tab-" + id).className = "tab-btn bg-blue-600 text-white px-4 py-2 rounded-xl text-sm font-semibold";
+  }
 
-      function renderOptions(keyword) {
-        const kw = keyword.toLowerCase();
-        const filtered = candidates.filter(p => p.nama.toLowerCase().includes(kw));
-        listEl.innerHTML = "";
-        if (!filtered.length) {
-          listEl.innerHTML = `<div class="px-4 py-3 text-xs text-slate-400">Nama tidak ditemukan</div>`;
-          return;
-        }
-        filtered.forEach(p => {
-          const item = document.createElement("button");
-          item.type = "button";
-          item.className = "w-full text-left px-4 py-2.5 text-sm hover:bg-blue-50 transition";
-          item.textContent = p.nama;
-          item.addEventListener("mousedown", (ev) => {
-            ev.preventDefault();
-            selectedChoices[kat.id] = p.nama;
-            inputEl.value = p.nama;
-            listEl.classList.add("hidden");
-            checkEl.classList.remove("hidden");
-            updateProgress();
-          });
-          listEl.appendChild(item);
-        });
-      }
+  function renderAll() {
+    const sudah = DB.pegawai.filter(p => p.status.toLowerCase() === "sudah").length;
+    document.getElementById("summaryText").textContent =
+      `Total ${DB.pegawai.length} pegawai • ${DB.kategori.length} kategori • ${sudah} sudah memilih (${DB.votes.length} suara masuk)`;
 
-      inputEl.addEventListener("focus", () => {
-        renderOptions(inputEl.value);
-        listEl.classList.remove("hidden");
-      });
-      inputEl.addEventListener("input", () => {
-        if (selectedChoices[kat.id] && inputEl.value !== selectedChoices[kat.id]) {
-          delete selectedChoices[kat.id];
-          checkEl.classList.add("hidden");
-          updateProgress();
-        }
-        renderOptions(inputEl.value);
-        listEl.classList.remove("hidden");
-      });
-      inputEl.addEventListener("blur", () => {
-        setTimeout(() => listEl.classList.add("hidden"), 150);
-      });
+    const sel = document.getElementById("filterKategori");
+    const prev = sel.value;
+    sel.innerHTML = `<option value="ALL">Semua Kategori</option>` +
+      DB.kategori.map(k => `<option value="${esc(k.id)}">${esc(k.nama)}</option>`).join("");
+    if (prev) sel.value = prev;
+
+    renderRekapKategori();
+    renderRekapPegawai();
+    renderMonitoring();
+    renderCrudKategori();
+    renderCrudPegawai();
+    renderCrudVotes();
+  }
+
+  function renderRekapKategori() {
+    const selectedId = document.getElementById("filterKategori").value || "ALL";
+    const listKat = selectedId === "ALL" ? DB.kategori : DB.kategori.filter(k => k.id === selectedId);
+    const body = document.getElementById("rekapKategoriBody");
+
+    if (!listKat.length) {
+      body.innerHTML = `<p class="text-sm text-slate-500">Belum ada kategori.</p>`;
+      return;
+    }
+
+    body.innerHTML = listKat.map(kat => {
+      const katVotes = DB.votes.filter(v => v.idKategori === kat.id);
+      const counts = {};
+      katVotes.forEach(v => { counts[v.namaTerpilih] = (counts[v.namaTerpilih] || 0) + 1; });
+      const ranked = Object.entries(counts).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+
+      const rows = ranked.length
+        ? ranked.map(([nama, jml], idx) => {
+            const pct = ((jml / katVotes.length) * 100).toFixed(1);
+            const medal = idx === 0 ? "🥇" : idx === 1 ? "🥈" : idx === 2 ? "🥉" : `#${idx + 1}`;
+            return `<tr class="border-b border-slate-100">
+              <td class="py-2 px-3 font-semibold w-16">${medal}</td>
+              <td class="py-2 px-3">${esc(nama)}</td>
+              <td class="py-2 px-3 text-right font-bold text-blue-700">${jml} suara <span class="text-xs font-normal text-slate-400">(${pct}%)</span></td>
+            </tr>`;
+          }).join("")
+        : `<tr><td colspan="3" class="py-3 px-3 text-slate-400 text-sm">Belum ada suara masuk.</td></tr>`;
+
+      return `<div class="mb-6">
+        <h3 class="font-bold text-blue-800 bg-blue-50 px-3 py-2 rounded-lg mb-2">${esc(kat.nama)} <span class="text-xs font-normal text-slate-500">(${katVotes.length} suara)</span></h3>
+        <table class="w-full text-sm"><tbody>${rows}</tbody></table>
+      </div>`;
+    }).join("");
+  }
+
+  function renderRekapPegawai() {
+    const kw = (document.getElementById("searchRekapPegawai").value || "").toLowerCase();
+    const katMap = Object.fromEntries(DB.kategori.map(k => [k.id, k.nama]));
+    const perPeg = {};
+
+    DB.votes.forEach(v => {
+      if (!perPeg[v.namaTerpilih]) perPeg[v.namaTerpilih] = {};
+      const katName = katMap[v.idKategori] || v.idKategori;
+      perPeg[v.namaTerpilih][katName] = (perPeg[v.namaTerpilih][katName] || 0) + 1;
     });
 
-    updateProgress();
-  }
+    const entries = Object.entries(perPeg)
+      .filter(([nama]) => nama.toLowerCase().includes(kw))
+      .map(([nama, kats]) => ({
+        nama,
+        total: Object.values(kats).reduce((a, b) => a + b, 0),
+        kats: Object.entries(kats).sort((a, b) => b[1] - a[1])
+      }))
+      .sort((a, b) => b.total - a.total || a.nama.localeCompare(b.nama));
 
-  function updateProgress() {
-    const filled = Object.keys(selectedChoices).length;
-    const total = allKategori.length;
-    document.getElementById("progressBadge").textContent = `${filled} / ${total} terisi`;
-  }
-
-  async function confirmSubmit() {
-    const errEl = document.getElementById("submitErr");
-    errEl.classList.add("hidden");
-
-    const missing = allKategori.filter(k => !selectedChoices[k.id]);
-    if (missing.length > 0) {
-      errEl.textContent = `Masih ada ${missing.length} kategori yang belum dipilih (misal: ${missing[0].nama}).`;
-      errEl.classList.remove("hidden");
+    const el = document.getElementById("rekapPegawaiBody");
+    if (!entries.length) {
+      el.innerHTML = `<p class="text-sm text-slate-500">Belum ada data suara yang cocok.</p>`;
       return;
     }
 
-    if (!confirm("Yakin ingin mengirim semua pilihan? Setelah dikirim, suara tidak dapat diubah.")) return;
+    el.innerHTML = entries.map(item => `
+      <div class="border border-slate-200 rounded-xl p-4">
+        <div class="flex items-center justify-between mb-2">
+          <span class="font-bold text-slate-800">${esc(item.nama)}</span>
+          <span class="text-xs font-bold bg-blue-100 text-blue-700 px-2.5 py-1 rounded-full">Total ${item.total} suara</span>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          ${item.kats.map(([k, n]) => `<span class="text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded-lg">${esc(k)}: <b>${n}</b></span>`).join("")}
+        </div>
+      </div>
+    `).join("");
+  }
 
-    const btn = document.getElementById("submitBtn");
-    btn.disabled = true;
-    btn.textContent = "Menyimpan suara...";
+  function renderMonitoring() {
+    const sudah = DB.pegawai.filter(p => p.status.toLowerCase() === "sudah");
+    const belum = DB.pegawai.filter(p => p.status.toLowerCase() !== "sudah");
+    const pct = DB.pegawai.length ? Math.round((sudah.length / DB.pegawai.length) * 100) : 0;
 
-    try {
-      const choices = allKategori.map(k => ({
-        idKategori: k.id,
-        namaTerpilih: selectedChoices[k.id]
-      }));
+    document.getElementById("monStats").textContent = `${sudah.length} dari ${DB.pegawai.length} pegawai sudah memilih (${pct}%)`;
+    document.getElementById("monBar").style.width = `${pct}%`;
+    document.getElementById("countBelum").textContent = belum.length;
+    document.getElementById("countSudah").textContent = sudah.length;
 
-      const res = await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify({
-          action: "submit_vote",
-          nip5: currentUser.nip5,
-          choices: choices
-        })
-      });
-      const data = await res.json();
-      if (!data.ok) {
-        errEl.textContent = data.error || "Gagal menyimpan suara.";
-        errEl.classList.remove("hidden");
-        btn.disabled = false;
-        btn.textContent = "Kirim Semua Pilihan";
-        return;
-      }
+    document.getElementById("listBelum").innerHTML = belum.map((p, i) => `
+      <div class="py-2 flex justify-between items-center">
+        <span>${i + 1}. ${esc(p.nama)}</span>
+        <span class="text-xs font-mono text-slate-400">${esc(p.nip5)}</span>
+      </div>
+    `).join("") || `<p class="text-slate-400 py-2">Semua sudah memilih!</p>`;
 
-      document.getElementById("voteCard").classList.add("hidden");
-      document.getElementById("doneName").textContent = currentUser.nama;
-      document.getElementById("doneCard").classList.remove("hidden");
-    } catch (e) {
-      errEl.textContent = "Terjadi kesalahan jaringan. Coba kirim ulang.";
-      errEl.classList.remove("hidden");
-      btn.disabled = false;
-      btn.textContent = "Kirim Semua Pilihan";
+    document.getElementById("listSudah").innerHTML = sudah.map((p, i) => `
+      <div class="py-2 flex justify-between items-center gap-2">
+        <span>${i + 1}. ${esc(p.nama)}</span>
+        <button data-nip5="${esc(p.nip5)}" data-nama="${esc(p.nama)}" onclick="resetUserVote(this)"
+          class="text-xs bg-amber-100 hover:bg-amber-200 text-amber-800 px-2.5 py-1 rounded-lg font-semibold">Reset Vote</button>
+      </div>
+    `).join("") || `<p class="text-slate-400 py-2">Belum ada yang memilih.</p>`;
+  }
+
+  function copyBelumMemilih() {
+    const belum = DB.pegawai.filter(p => p.status.toLowerCase() !== "sudah");
+    if (!belum.length) return alert("Semua pegawai sudah memilih!");
+    const text = `*Reminder Pemilihan Pegawai Ter-*\nBerikut daftar yang belum memilih (${belum.length} orang):\n` +
+      belum.map((p, i) => `${i + 1}. ${p.nama}`).join("\n");
+    navigator.clipboard.writeText(text).then(() => alert("Daftar berhasil disalin ke clipboard!"));
+  }
+
+  async function resetUserVote(btn) {
+    const nip5 = btn.dataset.nip5;
+    const nama = btn.dataset.nama;
+    if (!confirm(`Reset semua suara dari ${nama} agar bisa memilih ulang?`)) return;
+    await postAdmin({ action: "vote_reset_user", nip5 });
+  }
+
+  async function resetAllVotes() {
+    if (!confirm("PERINGATAN: Hapus SEMUA suara masuk dan reset status semua pegawai?")) return;
+    if (!confirm("Yakin 100%? Data vote yang dihapus tidak bisa dikembalikan.")) return;
+    await postAdmin({ action: "vote_reset_all" });
+  }
+
+  // === CRUD KATEGORI ===
+  function renderCrudKategori() {
+    const el = document.getElementById("crudKategoriList");
+    el.innerHTML = `<table class="w-full text-sm">
+      <thead><tr class="text-left border-b"><th class="py-2">ID</th><th>Nama Kategori</th><th>Deskripsi</th><th class="text-right">Aksi</th></tr></thead>
+      <tbody>${DB.kategori.map((k, idx) => `
+        <tr class="border-b border-slate-100">
+          <td class="py-2 font-mono text-xs">${esc(k.id)}</td>
+          <td class="py-2 font-semibold">${esc(k.nama)}</td>
+          <td class="py-2 text-slate-500">${esc(k.deskripsi)}</td>
+          <td class="py-2 text-right space-x-1">
+            <button onclick="editKategori(${idx})" class="text-xs bg-slate-100 hover:bg-slate-200 px-2.5 py-1 rounded-lg">Edit</button>
+            <button onclick="deleteKategori(${idx})" class="text-xs bg-red-100 hover:bg-red-200 text-red-700 px-2.5 py-1 rounded-lg">Hapus</button>
+          </td>
+        </tr>
+      `).join("")}</tbody></table>`;
+  }
+
+  async function addKategori() {
+    const id = document.getElementById("katId").value.trim();
+    const nama = document.getElementById("katNama").value.trim();
+    const deskripsi = document.getElementById("katDesk").value.trim();
+    if (!id || !nama) return alert("ID dan Nama Kategori wajib diisi.");
+    if (await postAdmin({ action: "kategori_add", id, nama, deskripsi })) {
+      document.getElementById("katId").value = "";
+      document.getElementById("katNama").value = "";
+      document.getElementById("katDesk").value = "";
     }
+  }
+
+  async function editKategori(idx) {
+    const k = DB.kategori[idx];
+    const id = prompt("ID Kategori:", k.id); if (id === null) return;
+    const nama = prompt("Nama Kategori:", k.nama); if (nama === null) return;
+    const deskripsi = prompt("Deskripsi:", k.deskripsi); if (deskripsi === null) return;
+    await postAdmin({ action: "kategori_update", oldId: k.id, id, nama, deskripsi });
+  }
+
+  async function deleteKategori(idx) {
+    const k = DB.kategori[idx];
+    if (!confirm(`Hapus kategori "${k.nama}"?`)) return;
+    await postAdmin({ action: "kategori_delete", id: k.id });
+  }
+
+  // === CRUD PEGAWAI ===
+  function renderCrudPegawai() {
+    const kw = (document.getElementById("searchCrudPegawai").value || "").toLowerCase();
+    const filtered = DB.pegawai
+      .map((p, idx) => ({ ...p, idx }))
+      .filter(p => p.nama.toLowerCase().includes(kw) || p.nip9.includes(kw));
+
+    document.getElementById("crudPegawaiList").innerHTML = `<table class="w-full text-sm">
+      <thead><tr class="text-left border-b"><th class="py-2">NIP (5 Digit)</th><th>Nama</th><th>Status</th><th class="text-right">Aksi</th></tr></thead>
+      <tbody>${filtered.map(p => `
+        <tr class="border-b border-slate-100">
+          <td class="py-2 font-mono text-xs">${esc(p.nip9)} <span class="text-blue-600">(${esc(p.nip5)})</span></td>
+          <td class="py-2">${esc(p.nama)}</td>
+          <td class="py-2 text-xs">${esc(p.status || "Belum")}</td>
+          <td class="py-2 text-right space-x-1">
+            <button onclick="editPegawai(${p.idx})" class="text-xs bg-slate-100 hover:bg-slate-200 px-2.5 py-1 rounded-lg">Edit</button>
+            <button onclick="deletePegawai(${p.idx})" class="text-xs bg-red-100 hover:bg-red-200 text-red-700 px-2.5 py-1 rounded-lg">Hapus</button>
+          </td>
+        </tr>
+      `).join("")}</tbody></table>`;
+  }
+
+  async function addPegawai() {
+    const nip9 = document.getElementById("pegNip").value.trim();
+    const nama = document.getElementById("pegNama").value.trim();
+    if (!nip9 || !nama) return alert("NIP dan Nama wajib diisi.");
+    if (await postAdmin({ action: "pegawai_add", nip9, nama })) {
+      document.getElementById("pegNip").value = "";
+      document.getElementById("pegNama").value = "";
+    }
+  }
+
+  async function editPegawai(idx) {
+    const p = DB.pegawai[idx];
+    const nip9 = prompt("NIP (9 digit / 5 digit):", p.nip9); if (nip9 === null) return;
+    const nama = prompt("Nama Pegawai:", p.nama); if (nama === null) return;
+    await postAdmin({ action: "pegawai_update", oldNip5: p.nip5, nip9, nama });
+  }
+
+  async function deletePegawai(idx) {
+    const p = DB.pegawai[idx];
+    if (!confirm(`Hapus pegawai "${p.nama}" beserta suara yang pernah ia kirim?`)) return;
+    await postAdmin({ action: "pegawai_delete", nip5: p.nip5 });
+  }
+
+  // === CRUD VOTES ===
+  function renderCrudVotes() {
+    const kw = (document.getElementById("searchCrudVotes").value || "").toLowerCase();
+    const katMap = Object.fromEntries(DB.kategori.map(k => [k.id, k.nama]));
+    const filtered = DB.votes
+      .map((v, idx) => ({ ...v, idx, namaKat: katMap[v.idKategori] || v.idKategori }))
+      .filter(v =>
+        v.namaPemilih.toLowerCase().includes(kw) ||
+        v.namaTerpilih.toLowerCase().includes(kw) ||
+        v.namaKat.toLowerCase().includes(kw)
+      );
+
+    document.getElementById("crudVotesList").innerHTML = `<table class="w-full text-sm">
+      <thead><tr class="text-left border-b"><th class="py-2">Waktu</th><th>Pemilih</th><th>Kategori</th><th>Terpilih</th><th class="text-right">Aksi</th></tr></thead>
+      <tbody>${filtered.map(v => `
+        <tr class="border-b border-slate-100">
+          <td class="py-2 text-xs text-slate-400">${esc(v.timestamp)}</td>
+          <td class="py-2">${esc(v.namaPemilih)}</td>
+          <td class="py-2 text-xs font-semibold">${esc(v.namaKat)}</td>
+          <td class="py-2 text-blue-700">${esc(v.namaTerpilih)}</td>
+          <td class="py-2 text-right">
+            <button onclick="editVote(${v.idx})" class="text-xs bg-slate-100 hover:bg-slate-200 px-2.5 py-1 rounded-lg">Edit</button>
+          </td>
+        </tr>
+      `).join("") || `<tr><td colspan="5" class="py-3 text-slate-400">Belum ada data suara.</td></tr>`}</tbody></table>`;
+  }
+
+  async function editVote(idx) {
+    const v = DB.votes[idx];
+    const namaBaru = prompt(`Ubah pilihan ${v.namaPemilih} untuk kategori ${v.idKategori}:`, v.namaTerpilih);
+    if (!namaBaru || namaBaru === v.namaTerpilih) return;
+    await postAdmin({ action: "vote_update_single", nip5: v.nip5Pemilih, idKategori: v.idKategori, namaTerpilih: namaBaru.trim() });
   }
 </script>
 </body>
