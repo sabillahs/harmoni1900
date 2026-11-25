@@ -4,7 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin Panel | Apresiasi Pegawai BPS Provinsi Kepulauan Bangka Belitung</title>
-  <link rel="icon" type="image/png" href="logo-bps.png" />
+  <link rel="icon" type="image/png" href="./logo-bps.png?v=2" />
+  <link rel="shortcut icon" type="image/png" href="./logo-bps.png?v=2" />
+  <link rel="apple-touch-icon" href="./logo-bps.png?v=2" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -12,53 +14,57 @@
   <style>
     body {
       font-family: 'Plus Jakarta Sans', sans-serif;
-      background-color: #f8fbff;
+      background-color: #fffaf5;
       background-image:
-        radial-gradient(at 0% 0%, rgba(186, 230, 253, 0.45) 0px, transparent 50%),
-        radial-gradient(at 100% 0%, rgba(167, 243, 208, 0.35) 0px, transparent 50%),
-        radial-gradient(at 100% 100%, rgba(191, 219, 254, 0.35) 0px, transparent 50%),
-        radial-gradient(at 0% 100%, rgba(209, 250, 229, 0.35) 0px, transparent 50%);
+        radial-gradient(at 0% 0%, rgba(254, 215, 170, 0.55) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(254, 205, 211, 0.45) 0px, transparent 48%),
+        radial-gradient(at 100% 100%, rgba(253, 230, 138, 0.4) 0px, transparent 50%),
+        radial-gradient(at 0% 100%, rgba(255, 237, 213, 0.65) 0px, transparent 50%);
       background-attachment: fixed;
     }
   </style>
 </head>
-<body class="text-slate-800 min-h-screen">
+<body class="text-slate-800 min-h-screen selection:bg-orange-200 selection:text-orange-900">
   <!-- Login Screen -->
   <div id="pinScreen" class="min-h-screen flex items-center justify-center px-4">
-    <div class="bg-white/90 backdrop-blur-md rounded-3xl shadow-xl shadow-blue-900/5 border border-white p-7 w-full max-w-sm">
+    <div class="bg-white rounded-3xl shadow-xl shadow-orange-900/5 border border-orange-100 p-7 w-full max-w-sm">
       <div class="flex items-center gap-3 mb-5">
-        <img src="logo-bps.png" alt="Logo BPS" class="h-9 w-auto object-contain" />
+        <div class="p-1.5 bg-orange-50 rounded-xl border border-orange-100 shrink-0">
+          <img src="./logo-bps.png?v=2" alt="Logo BPS" class="h-8 w-auto object-contain" />
+        </div>
         <div class="leading-tight">
           <h1 class="text-lg font-extrabold text-slate-900">Admin Panel</h1>
-          <p class="text-[11px] text-slate-500">Apresiasi Pegawai BPS Prov. Kep. Bangka Belitung</p>
+          <p class="text-[11px] text-orange-700/80 font-semibold">Apresiasi Pegawai BPS Prov. Kep. Bangka Belitung</p>
         </div>
       </div>
       <p class="text-xs text-slate-500 mb-3">Masukkan PIN Admin untuk mengakses rekap dan kelola data.</p>
       <input id="pinInput" type="password" placeholder="PIN Admin"
-        class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 mb-3 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500" />
+        class="w-full bg-orange-50/40 border border-orange-200 rounded-2xl px-4 py-3 mb-3 focus:bg-white focus:outline-none focus:ring-4 focus:ring-orange-500/15 focus:border-orange-500 transition" />
       <button id="pinBtn" onclick="loadAdmin()"
-        class="w-full bg-gradient-to-r from-blue-700 to-blue-600 hover:from-blue-800 hover:to-blue-700 text-white font-bold py-3 rounded-2xl shadow-md shadow-blue-600/20 transition">
+        class="w-full bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-600 hover:to-rose-600 text-white font-bold py-3 rounded-2xl shadow-lg shadow-orange-500/25 transition">
         Masuk Admin
       </button>
-      <p id="pinErr" class="text-red-600 text-xs mt-2.5 hidden"></p>
+      <p id="pinErr" class="text-rose-600 text-xs font-medium mt-2.5 hidden"></p>
     </div>
   </div>
 
   <!-- Dashboard -->
   <div id="dashboard" class="hidden">
     <!-- Top Navbar -->
-    <header class="sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-slate-200/70">
+    <header class="sticky top-0 z-40 bg-white/85 backdrop-blur-md border-b border-orange-100/80">
       <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
-        <div class="flex items-center gap-3">
-          <img src="logo-bps.png" alt="Logo BPS" class="h-9 w-auto object-contain" />
-          <div class="leading-tight">
-            <h1 class="text-base sm:text-lg font-extrabold text-slate-900">Admin — Apresiasi Pegawai BPS Provinsi Kepulauan Bangka Belitung</h1>
-            <p id="summaryText" class="text-xs text-slate-500"></p>
+        <div class="flex items-center gap-3 min-w-0">
+          <div class="p-1.5 bg-orange-50 rounded-xl border border-orange-100 shrink-0">
+            <img src="./logo-bps.png?v=2" alt="Logo BPS" class="h-7 w-auto object-contain" />
+          </div>
+          <div class="leading-tight min-w-0">
+            <h1 class="text-sm sm:text-base font-extrabold text-slate-900 truncate">Admin — Apresiasi Pegawai BPS Provinsi Kepulauan Bangka Belitung</h1>
+            <p id="summaryText" class="text-xs text-slate-500 truncate"></p>
           </div>
         </div>
         <div class="flex gap-2">
-          <button onclick="refreshData()" class="bg-white border border-slate-200 hover:bg-slate-50 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-slate-700 shadow-sm">Refresh</button>
-          <button onclick="resetAllVotes()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl text-xs sm:text-sm font-bold shadow-sm">Reset Semua Vote</button>
+          <button onclick="refreshData()" class="bg-white border border-orange-200 hover:bg-orange-50 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold text-slate-700 shadow-sm transition">Refresh</button>
+          <button onclick="resetAllVotes()" class="bg-rose-600 hover:bg-rose-700 text-white px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold shadow-sm transition">Reset Semua Vote</button>
         </div>
       </div>
     </header>
@@ -66,59 +72,59 @@
     <div class="max-w-6xl mx-auto px-4 py-6">
       <!-- Tabs -->
       <div class="flex flex-wrap gap-2 mb-5">
-        <button onclick="switchTab('kat')" id="tab-kat" class="tab-btn bg-blue-700 text-white px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">Rekap per Kategori</button>
-        <button onclick="switchTab('peg')" id="tab-peg" class="tab-btn bg-white/90 text-slate-700 border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-bold">Rekap per Pegawai</button>
-        <button onclick="switchTab('mon')" id="tab-mon" class="tab-btn bg-white/90 text-slate-700 border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-bold">Monitoring Partisipasi</button>
-        <button onclick="switchTab('crud')" id="tab-crud" class="tab-btn bg-white/90 text-slate-700 border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-bold">Kelola Data (CRUD)</button>
+        <button onclick="switchTab('kat')" id="tab-kat" class="tab-btn bg-gradient-to-r from-orange-500 to-rose-500 text-white px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold shadow-md shadow-orange-500/20">Rekap per Kategori</button>
+        <button onclick="switchTab('peg')" id="tab-peg" class="tab-btn bg-white text-slate-700 border border-orange-100 hover:border-orange-300 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold">Rekap per Pegawai</button>
+        <button onclick="switchTab('mon')" id="tab-mon" class="tab-btn bg-white text-slate-700 border border-orange-100 hover:border-orange-300 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold">Monitoring Partisipasi</button>
+        <button onclick="switchTab('crud')" id="tab-crud" class="tab-btn bg-white text-slate-700 border border-orange-100 hover:border-orange-300 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold">Kelola Data (CRUD)</button>
       </div>
 
       <!-- TAB 1: REKAP PER KATEGORI -->
-      <div id="panel-kat" class="tab-panel bg-white/90 backdrop-blur-md rounded-3xl shadow-sm border border-slate-200/70 p-6">
+      <div id="panel-kat" class="tab-panel bg-white rounded-3xl shadow-sm border border-orange-100 p-5 sm:p-6">
         <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
           <h2 class="font-extrabold text-lg text-slate-900">Peringkat Lengkap per Kategori</h2>
-          <select id="filterKategori" onchange="renderRekapKategori()" class="bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm font-medium"></select>
+          <select id="filterKategori" onchange="renderRekapKategori()" class="bg-orange-50/50 border border-orange-200 rounded-xl px-3.5 py-2 text-sm font-semibold text-slate-700"></select>
         </div>
         <div id="rekapKategoriBody" class="overflow-x-auto"></div>
       </div>
 
       <!-- TAB 2: REKAP PER PEGAWAI -->
-      <div id="panel-peg" class="tab-panel hidden bg-white/90 backdrop-blur-md rounded-3xl shadow-sm border border-slate-200/70 p-6">
+      <div id="panel-peg" class="tab-panel hidden bg-white rounded-3xl shadow-sm border border-orange-100 p-5 sm:p-6">
         <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
           <div>
             <h2 class="font-extrabold text-lg text-slate-900">Perolehan Apresiasi per Pegawai</h2>
             <p class="text-xs text-slate-500">Diurutkan berdasarkan abjad nama pegawai (A–Z)</p>
           </div>
           <input id="searchRekapPegawai" oninput="renderRekapPegawai()" placeholder="Cari nama pegawai..."
-            class="bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm w-64" />
+            class="bg-orange-50/40 border border-orange-200 rounded-xl px-3.5 py-2 text-sm w-full sm:w-64 focus:bg-white focus:outline-none focus:border-orange-500" />
         </div>
         <div id="rekapPegawaiBody" class="space-y-3"></div>
       </div>
 
       <!-- TAB 3: MONITORING PARTISIPASI -->
       <div id="panel-mon" class="tab-panel hidden space-y-4">
-        <div class="bg-white/90 backdrop-blur-md rounded-3xl shadow-sm border border-slate-200/70 p-6">
+        <div class="bg-white rounded-3xl shadow-sm border border-orange-100 p-5 sm:p-6">
           <div class="flex flex-wrap items-center justify-between gap-3 mb-3">
             <div>
               <h2 class="font-extrabold text-lg text-slate-900">Progres Partisipasi</h2>
               <p id="monStats" class="text-sm text-slate-600"></p>
             </div>
-            <button onclick="copyBelumMemilih()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">
+            <button onclick="copyBelumMemilih()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold shadow-sm transition">
               Copy Daftar Belum Memilih
             </button>
           </div>
-          <div class="w-full bg-slate-200/80 rounded-full h-3">
-            <div id="monBar" class="bg-gradient-to-r from-blue-600 to-teal-500 h-3 rounded-full transition-all" style="width:0%"></div>
+          <div class="w-full bg-orange-100 rounded-full h-3">
+            <div id="monBar" class="bg-gradient-to-r from-orange-500 via-amber-500 to-rose-500 h-3 rounded-full transition-all" style="width:0%"></div>
           </div>
         </div>
 
         <div class="grid md:grid-cols-2 gap-4">
-          <div class="bg-white/90 backdrop-blur-md rounded-3xl shadow-sm border border-slate-200/70 p-6">
-            <h3 class="font-extrabold text-red-600 mb-3">Belum Memilih (<span id="countBelum">0</span>)</h3>
-            <div id="listBelum" class="divide-y divide-slate-100 max-h-96 overflow-y-auto text-sm"></div>
+          <div class="bg-white rounded-3xl shadow-sm border border-orange-100 p-5 sm:p-6">
+            <h3 class="font-extrabold text-rose-600 mb-3">Belum Memilih (<span id="countBelum">0</span>)</h3>
+            <div id="listBelum" class="divide-y divide-orange-50 max-h-96 overflow-y-auto text-sm"></div>
           </div>
-          <div class="bg-white/90 backdrop-blur-md rounded-3xl shadow-sm border border-slate-200/70 p-6">
+          <div class="bg-white rounded-3xl shadow-sm border border-orange-100 p-5 sm:p-6">
             <h3 class="font-extrabold text-emerald-600 mb-3">Sudah Memilih (<span id="countSudah">0</span>)</h3>
-            <div id="listSudah" class="divide-y divide-slate-100 max-h-96 overflow-y-auto text-sm"></div>
+            <div id="listSudah" class="divide-y divide-orange-50 max-h-96 overflow-y-auto text-sm"></div>
           </div>
         </div>
       </div>
@@ -126,33 +132,33 @@
       <!-- TAB 4: CRUD -->
       <div id="panel-crud" class="tab-panel hidden space-y-6">
         <!-- CRUD Kategori -->
-        <div class="bg-white/90 backdrop-blur-md rounded-3xl shadow-sm border border-slate-200/70 p-6">
+        <div class="bg-white rounded-3xl shadow-sm border border-orange-100 p-5 sm:p-6">
           <h2 class="font-extrabold text-lg text-slate-900 mb-3">Kelola Kategori Apresiasi</h2>
           <div class="grid md:grid-cols-4 gap-2 mb-4">
-            <input id="katId" placeholder="ID (mis: K01)" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm" />
-            <input id="katNama" placeholder="Nama Kategori (mis: Ter-Ramah)" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm" />
-            <input id="katDesk" placeholder="Deskripsi singkat (opsional)" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm" />
-            <button onclick="addKategori()" class="bg-blue-700 hover:bg-blue-800 text-white rounded-xl px-4 py-2 text-sm font-bold">+ Tambah Kategori</button>
+            <input id="katId" placeholder="ID (mis: K01)" class="bg-orange-50/40 border border-orange-200 rounded-xl px-3 py-2 text-sm" />
+            <input id="katNama" placeholder="Nama Kategori (mis: Ter-Ramah)" class="bg-orange-50/40 border border-orange-200 rounded-xl px-3 py-2 text-sm" />
+            <input id="katDesk" placeholder="Deskripsi singkat (opsional)" class="bg-orange-50/40 border border-orange-200 rounded-xl px-3 py-2 text-sm" />
+            <button onclick="addKategori()" class="bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-600 hover:to-rose-600 text-white rounded-xl px-4 py-2 text-sm font-bold">+ Tambah Kategori</button>
           </div>
           <div id="crudKategoriList" class="overflow-x-auto"></div>
         </div>
 
         <!-- CRUD Pegawai -->
-        <div class="bg-white/90 backdrop-blur-md rounded-3xl shadow-sm border border-slate-200/70 p-6">
+        <div class="bg-white rounded-3xl shadow-sm border border-orange-100 p-5 sm:p-6">
           <h2 class="font-extrabold text-lg text-slate-900 mb-3">Kelola Pegawai (Tambah Dummy / Edit / Hapus)</h2>
           <div class="grid md:grid-cols-3 gap-2 mb-4">
-            <input id="pegNip" placeholder="NIP 9 Digit / 5 Digit Dummy" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm" />
-            <input id="pegNama" placeholder="Nama Lengkap Pegawai" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm" />
-            <button onclick="addPegawai()" class="bg-blue-700 hover:bg-blue-800 text-white rounded-xl px-4 py-2 text-sm font-bold">+ Tambah Pegawai</button>
+            <input id="pegNip" placeholder="NIP 9 Digit / 5 Digit Dummy" class="bg-orange-50/40 border border-orange-200 rounded-xl px-3 py-2 text-sm" />
+            <input id="pegNama" placeholder="Nama Lengkap Pegawai" class="bg-orange-50/40 border border-orange-200 rounded-xl px-3 py-2 text-sm" />
+            <button onclick="addPegawai()" class="bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-600 hover:to-rose-600 text-white rounded-xl px-4 py-2 text-sm font-bold">+ Tambah Pegawai</button>
           </div>
-          <input id="searchCrudPegawai" oninput="renderCrudPegawai()" placeholder="Filter nama atau NIP..." class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-sm mb-3 w-64" />
+          <input id="searchCrudPegawai" oninput="renderCrudPegawai()" placeholder="Filter nama atau NIP..." class="bg-orange-50/40 border border-orange-200 rounded-xl px-3 py-1.5 text-sm mb-3 w-full sm:w-64" />
           <div id="crudPegawaiList" class="overflow-x-auto max-h-80 overflow-y-auto"></div>
         </div>
 
         <!-- CRUD Edit Vote -->
-        <div class="bg-white/90 backdrop-blur-md rounded-3xl shadow-sm border border-slate-200/70 p-6">
+        <div class="bg-white rounded-3xl shadow-sm border border-orange-100 p-5 sm:p-6">
           <h2 class="font-extrabold text-lg text-slate-900 mb-3">Edit Data Suara Masuk</h2>
-          <input id="searchCrudVotes" oninput="renderCrudVotes()" placeholder="Cari pemilih atau terpilih..." class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-sm mb-3 w-64" />
+          <input id="searchCrudVotes" oninput="renderCrudVotes()" placeholder="Cari pemilih atau terpilih..." class="bg-orange-50/40 border border-orange-200 rounded-xl px-3 py-1.5 text-sm mb-3 w-full sm:w-64" />
           <div id="crudVotesList" class="overflow-x-auto max-h-80 overflow-y-auto"></div>
         </div>
       </div>
@@ -220,9 +226,9 @@
     document.querySelectorAll(".tab-panel").forEach(el => el.classList.add("hidden"));
     document.getElementById("panel-" + id).classList.remove("hidden");
     document.querySelectorAll(".tab-btn").forEach(btn => {
-      btn.className = "tab-btn bg-white/90 text-slate-700 border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-bold";
+      btn.className = "tab-btn bg-white text-slate-700 border border-orange-100 hover:border-orange-300 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold";
     });
-    document.getElementById("tab-" + id).className = "tab-btn bg-blue-700 text-white px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm";
+    document.getElementById("tab-" + id).className = "tab-btn bg-gradient-to-r from-orange-500 to-rose-500 text-white px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold shadow-md shadow-orange-500/20";
   }
 
   function renderAll() {
@@ -264,16 +270,16 @@
         ? ranked.map(([nama, jml], idx) => {
             const pct = ((jml / katVotes.length) * 100).toFixed(1);
             const medal = idx === 0 ? "🥇" : idx === 1 ? "🥈" : idx === 2 ? "🥉" : `#${idx + 1}`;
-            return `<tr class="border-b border-slate-100">
+            return `<tr class="border-b border-orange-50">
               <td class="py-2.5 px-3 font-bold w-16">${medal}</td>
               <td class="py-2.5 px-3 font-medium">${esc(nama)}</td>
-              <td class="py-2.5 px-3 text-right font-bold text-blue-700">${jml} suara <span class="text-xs font-normal text-slate-400">(${pct}%)</span></td>
+              <td class="py-2.5 px-3 text-right font-extrabold text-orange-600">${jml} suara <span class="text-xs font-normal text-slate-400">(${pct}%)</span></td>
             </tr>`;
           }).join("")
         : `<tr><td colspan="3" class="py-3 px-3 text-slate-400 text-sm">Belum ada suara masuk.</td></tr>`;
 
       return `<div class="mb-6">
-        <h3 class="font-extrabold text-blue-800 bg-blue-50/80 border border-blue-100 px-4 py-2.5 rounded-xl mb-2">${esc(kat.nama)} <span class="text-xs font-medium text-slate-500">(${katVotes.length} suara)</span></h3>
+        <h3 class="font-extrabold text-orange-800 bg-orange-50 border border-orange-100 px-4 py-2.5 rounded-xl mb-2">${esc(kat.nama)} <span class="text-xs font-medium text-slate-500">(${katVotes.length} suara)</span></h3>
         <table class="w-full text-sm"><tbody>${rows}</tbody></table>
       </div>`;
     }).join("");
@@ -306,13 +312,13 @@
     }
 
     el.innerHTML = entries.map(item => `
-      <div class="border border-slate-200/80 bg-white rounded-2xl p-4">
-        <div class="flex items-center justify-between mb-2.5">
-          <span class="font-bold text-slate-900">${esc(item.nama)}</span>
-          <span class="text-xs font-bold bg-blue-50 text-blue-700 border border-blue-100 px-3 py-1 rounded-full">Total ${item.total} suara</span>
+      <div class="border border-orange-100 bg-orange-50/20 rounded-2xl p-4">
+        <div class="flex items-center justify-between gap-2 mb-2.5">
+          <span class="font-extrabold text-slate-900">${esc(item.nama)}</span>
+          <span class="shrink-0 text-xs font-extrabold bg-orange-100 text-orange-700 px-3 py-1 rounded-full">Total ${item.total} suara</span>
         </div>
         <div class="flex flex-wrap gap-2">
-          ${item.kats.map(([k, n]) => `<span class="text-xs bg-slate-50 border border-slate-200/70 text-slate-700 px-2.5 py-1 rounded-lg">${esc(k)}: <b>${n}</b></span>`).join("")}
+          ${item.kats.map(([k, n]) => `<span class="text-xs bg-white border border-orange-100 text-slate-700 px-2.5 py-1 rounded-lg">${esc(k)}: <b class="text-orange-600">${n}</b></span>`).join("")}
         </div>
       </div>
     `).join("");
@@ -369,15 +375,15 @@
   function renderCrudKategori() {
     const el = document.getElementById("crudKategoriList");
     el.innerHTML = `<table class="w-full text-sm">
-      <thead><tr class="text-left border-b"><th class="py-2">ID</th><th>Nama Kategori</th><th>Deskripsi</th><th class="text-right">Aksi</th></tr></thead>
+      <thead><tr class="text-left border-b border-orange-100"><th class="py-2">ID</th><th>Nama Kategori</th><th>Deskripsi</th><th class="text-right">Aksi</th></tr></thead>
       <tbody>${DB.kategori.map((k, idx) => `
-        <tr class="border-b border-slate-100">
+        <tr class="border-b border-orange-50">
           <td class="py-2 font-mono text-xs">${esc(k.id)}</td>
           <td class="py-2 font-semibold">${esc(k.nama)}</td>
           <td class="py-2 text-slate-500">${esc(k.deskripsi)}</td>
           <td class="py-2 text-right space-x-1">
-            <button onclick="editKategori(${idx})" class="text-xs bg-slate-100 hover:bg-slate-200 px-2.5 py-1 rounded-lg font-semibold">Edit</button>
-            <button onclick="deleteKategori(${idx})" class="text-xs bg-red-50 hover:bg-red-100 text-red-700 px-2.5 py-1 rounded-lg font-semibold">Hapus</button>
+            <button onclick="editKategori(${idx})" class="text-xs bg-orange-50 hover:bg-orange-100 text-orange-800 px-2.5 py-1 rounded-lg font-semibold">Edit</button>
+            <button onclick="deleteKategori(${idx})" class="text-xs bg-rose-50 hover:bg-rose-100 text-rose-700 px-2.5 py-1 rounded-lg font-semibold">Hapus</button>
           </td>
         </tr>
       `).join("")}</tbody></table>`;
@@ -417,15 +423,15 @@
       .filter(p => p.nama.toLowerCase().includes(kw) || p.nip9.includes(kw));
 
     document.getElementById("crudPegawaiList").innerHTML = `<table class="w-full text-sm">
-      <thead><tr class="text-left border-b"><th class="py-2">NIP (5 Digit)</th><th>Nama</th><th>Status</th><th class="text-right">Aksi</th></tr></thead>
+      <thead><tr class="text-left border-b border-orange-100"><th class="py-2">NIP (5 Digit)</th><th>Nama</th><th>Status</th><th class="text-right">Aksi</th></tr></thead>
       <tbody>${filtered.map(p => `
-        <tr class="border-b border-slate-100">
-          <td class="py-2 font-mono text-xs">${esc(p.nip9)} <span class="text-blue-600">(${esc(p.nip5)})</span></td>
+        <tr class="border-b border-orange-50">
+          <td class="py-2 font-mono text-xs">${esc(p.nip9)} <span class="text-orange-600 font-bold">(${esc(p.nip5)})</span></td>
           <td class="py-2">${esc(p.nama)}</td>
           <td class="py-2 text-xs">${esc(p.status || "Belum")}</td>
           <td class="py-2 text-right space-x-1">
-            <button onclick="editPegawai(${p.idx})" class="text-xs bg-slate-100 hover:bg-slate-200 px-2.5 py-1 rounded-lg font-semibold">Edit</button>
-            <button onclick="deletePegawai(${p.idx})" class="text-xs bg-red-50 hover:bg-red-100 text-red-700 px-2.5 py-1 rounded-lg font-semibold">Hapus</button>
+            <button onclick="editPegawai(${p.idx})" class="text-xs bg-orange-50 hover:bg-orange-100 text-orange-800 px-2.5 py-1 rounded-lg font-semibold">Edit</button>
+            <button onclick="deletePegawai(${p.idx})" class="text-xs bg-rose-50 hover:bg-rose-100 text-rose-700 px-2.5 py-1 rounded-lg font-semibold">Hapus</button>
           </td>
         </tr>
       `).join("")}</tbody></table>`;
@@ -467,15 +473,15 @@
       );
 
     document.getElementById("crudVotesList").innerHTML = `<table class="w-full text-sm">
-      <thead><tr class="text-left border-b"><th class="py-2">Waktu</th><th>Pemilih</th><th>Kategori</th><th>Terpilih</th><th class="text-right">Aksi</th></tr></thead>
+      <thead><tr class="text-left border-b border-orange-100"><th class="py-2">Waktu</th><th>Pemilih</th><th>Kategori</th><th>Terpilih</th><th class="text-right">Aksi</th></tr></thead>
       <tbody>${filtered.map(v => `
-        <tr class="border-b border-slate-100">
+        <tr class="border-b border-orange-50">
           <td class="py-2 text-xs text-slate-400">${esc(v.timestamp)}</td>
           <td class="py-2">${esc(v.namaPemilih)}</td>
           <td class="py-2 text-xs font-semibold">${esc(v.namaKat)}</td>
-          <td class="py-2 text-blue-700 font-medium">${esc(v.namaTerpilih)}</td>
+          <td class="py-2 text-orange-600 font-semibold">${esc(v.namaTerpilih)}</td>
           <td class="py-2 text-right">
-            <button onclick="editVote(${v.idx})" class="text-xs bg-slate-100 hover:bg-slate-200 px-2.5 py-1 rounded-lg font-semibold">Edit</button>
+            <button onclick="editVote(${v.idx})" class="text-xs bg-orange-50 hover:bg-orange-100 text-orange-800 px-2.5 py-1 rounded-lg font-semibold">Edit</button>
           </td>
         </tr>
       `).join("") || `<tr><td colspan="5" class="py-3 text-slate-400">Belum ada data suara.</td></tr>`}</tbody></table>`;
