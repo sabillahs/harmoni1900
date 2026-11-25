@@ -3,133 +3,6 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin Panel | Pemilihan Pegawai Ter-</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-slate-100 text-slate-800 min-h-screen">
-  <!-- Login Screen -->
-  <div id="pinScreen" class="min-h-screen flex items-center justify-center px-4">
-    <div class="bg-white rounded-2xl shadow-md border border-slate-200 p-6 w-full max-w-sm">
-      <h1 class="text-xl font-bold text-slate-800">Admin Panel Pemilihan</h1>
-      <p class="text-xs text-slate-500 mt-1 mb-4">Masukkan PIN Admin untuk mengakses rekap & kelola data.</p>
-      <input id="pinInput" type="password" placeholder="PIN Admin"
-        class="w-full border border-slate-300 rounded-xl px-4 py-2.5 mb-3 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-      <button id="pinBtn" onclick="loadAdmin()"
-        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-xl transition">
-        Masuk Admin
-      </button>
-      <p id="pinErr" class="text-red-600 text-xs mt-2 hidden"></p>
-    </div>
-  </div>
-
-  <!-- Dashboard -->
-  <div id="dashboard" class="hidden max-w-6xl mx-auto px-4 py-6">
-    <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
-      <div>
-        <h1 class="text-2xl font-bold text-slate-800">Dashboard Admin — Pegawai Ter-</h1>
-        <p id="summaryText" class="text-sm text-slate-500"></p>
-      </div>
-      <div class="flex gap-2">
-        <button onclick="refreshData()" class="bg-white border border-slate-300 hover:bg-slate-50 px-4 py-2 rounded-xl text-sm font-semibold">Refresh</button>
-        <button onclick="resetAllVotes()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl text-sm font-semibold">Reset Semua Vote</button>
-      </div>
-    </div>
-
-    <!-- Tabs -->
-    <div class="flex flex-wrap gap-2 mb-5">
-      <button onclick="switchTab('kat')" id="tab-kat" class="tab-btn bg-blue-600 text-white px-4 py-2 rounded-xl text-sm font-semibold">Rekap per Kategori</button>
-      <button onclick="switchTab('peg')" id="tab-peg" class="tab-btn bg-white text-slate-700 border border-slate-200 px-4 py-2 rounded-xl text-sm font-semibold">Rekap per Pegawai</button>
-      <button onclick="switchTab('mon')" id="tab-mon" class="tab-btn bg-white text-slate-700 border border-slate-200 px-4 py-2 rounded-xl text-sm font-semibold">Monitoring Partisipasi</button>
-      <button onclick="switchTab('crud')" id="tab-crud" class="tab-btn bg-white text-slate-700 border border-slate-200 px-4 py-2 rounded-xl text-sm font-semibold">Kelola Data (CRUD)</button>
-    </div>
-
-    <!-- TAB 1: REKAP PER KATEGORI -->
-    <div id="panel-kat" class="tab-panel bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
-      <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
-        <h2 class="font-bold text-lg">Peringkat Lengkap per Kategori</h2>
-        <select id="filterKategori" onchange="renderRekapKategori()" class="border border-slate-300 rounded-xl px-3 py-2 text-sm"></select>
-      </div>
-      <div id="rekapKategoriBody" class="overflow-x-auto"></div>
-    </div>
-
-    <!-- TAB 2: REKAP PER PEGAWAI -->
-    <div id="panel-peg" class="tab-panel hidden bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
-      <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
-        <h2 class="font-bold text-lg">Perolehan "Ter-" per Pegawai</h2>
-        <input id="searchRekapPegawai" oninput="renderRekapPegawai()" placeholder="Cari nama pegawai..."
-          class="border border-slate-300 rounded-xl px-3 py-2 text-sm w-64" />
-      </div>
-      <div id="rekapPegawaiBody" class="space-y-3"></div>
-    </div>
-
-    <!-- TAB 3: MONITORING PARTISIPASI -->
-    <div id="panel-mon" class="tab-panel hidden space-y-4">
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
-        <div class="flex flex-wrap items-center justify-between gap-3 mb-3">
-          <div>
-            <h2 class="font-bold text-lg">Progres Partisipasi</h2>
-            <p id="monStats" class="text-sm text-slate-600"></p>
-          </div>
-          <button onclick="copyBelumMemilih()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-sm font-semibold">
-            Copy Daftar Belum Memilih (WA)
-          </button>
-        </div>
-        <div class="w-full bg-slate-200 rounded-full h-3">
-          <div id="monBar" class="bg-blue-600 h-3 rounded-full transition-all" style="width:0%"></div>
-        </div>
-      </div>
-
-      <div class="grid md:grid-cols-2 gap-4">
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
-          <h3 class="font-bold text-red-600 mb-3">Belum Memilih (<span id="countBelum">0</span>)</h3>
-          <div id="listBelum" class="divide-y divide-slate-100 max-h-96 overflow-y-auto text-sm"></div>
-        </div>
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
-          <h3 class="font-bold text-emerald-600 mb-3">Sudah Memilih (<span id="countSudah">0</span>)</h3>
-          <div id="listSudah" class="divide-y divide-slate-100 max-h-96 overflow-y-auto text-sm"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- TAB 4: CRUD -->
-    <div id="panel-crud" class="tab-panel hidden space-y-6">
-      <!-- CRUD Kategori -->
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
-        <h2 class="font-bold text-lg mb-3">Kelola Kategori "Ter-"</h2>
-        <div class="grid md:grid-cols-4 gap-2 mb-4">
-          <input id="katId" placeholder="ID (mis: K01)" class="border rounded-xl px-3 py-2 text-sm" />
-          <input id="katNama" placeholder="Nama Kategori (mis: Teramah)" class="border rounded-xl px-3 py-2 text-sm" />
-          <input id="katDesk" placeholder="Deskripsi singkat (opsional)" class="border rounded-xl px-3 py-2 text-sm" />
-          <button onclick="addKategori()" class="bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-4 py-2 text-sm font-semibold">+ Tambah Kategori</button>
-        </div>
-        <div id="crudKategoriList" class="overflow-x-auto"></div>
-      </div>
-
-      <!-- CRUD Pegawai -->
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
-        <h2 class="font-bold text-lg mb-3">Kelola Pegawai (Tambah Dummy / Edit / Hapus)</h2>
-        <div class="grid md:grid-cols-3 gap-2 mb-4">
-          <input id="pegNip" placeholder="NIP 9 Digit / 5 Digit Dummy" class="border rounded-xl px-3 py-2 text-sm" />
-          <input id="pegNama" placeholder="Nama Lengkap Pegawai" class="border rounded-xl px-3 py-2 text-sm" />
-          <button onclick="addPegawai()" class="bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-4 py-2 text-sm font-semibold">+ Tambah Pegawai</button>
-        </div>
-        <input id="searchCrudPegawai" oninput="renderCrudPegawai()" placeholder="Filter nama/NIP..." class="border rounded-xl px-3 py-1.5 text-sm mb-3 w-64" />
-        <div id="crudPegawaiList" class="overflow-x-auto max-h-80 overflow-y-auto"></div>
-      </div>
-
-      <!-- CRUD Edit Vote -->
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
-        <h2 class="font-bold text-lg mb-3">Edit Data Suara Masuk</h2>
-        <input id="searchCrudVotes" oninput="renderCrudVotes()" placeholder="Cari pemilih / terpilih..." class="border rounded-xl px-3 py-1.5 text-sm mb-3 w-64" />
-        <div id="crudVotesList" class="overflow-x-auto max-h-80 overflow-y-auto"></div>
-      </div>
-    </div>
-  </div>
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pemilihan Pegawai Ter- | BPS Provinsi Kepulauan Bangka Belitung</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
@@ -187,7 +60,7 @@
   </div>
 
 <script>
-  const API_URL = "https://script.google.com/macros/s/AKfycbwAJUttNpA_J_mNcbRTQxHiC_72VoCCHjhYuVtk4VULPFYgSqU0wVXQ_etPTZDX-NPV/exec";
+  const API_URL = "https://script.google.com/macros/s/AKfycbxWlpDLHNbsAByL6hytD6BU0e4tPCd8enb8kwkOjzg/dev";
   const ALLOW_SELF_VOTE = false; // Ubah ke true jika boleh memilih diri sendiri
 
   let currentUser = null;
