@@ -3,125 +3,158 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin Panel | Pemilihan Pegawai Ter-</title>
+  <title>Admin Panel | Apresiasi Pegawai BPS Provinsi Kepulauan Bangka Belitung</title>
+  <link rel="icon" type="image/png" href="logo-bps.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #f8fbff;
+      background-image:
+        radial-gradient(at 0% 0%, rgba(186, 230, 253, 0.45) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(167, 243, 208, 0.35) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(191, 219, 254, 0.35) 0px, transparent 50%),
+        radial-gradient(at 0% 100%, rgba(209, 250, 229, 0.35) 0px, transparent 50%);
+      background-attachment: fixed;
+    }
+  </style>
 </head>
-<body class="bg-slate-100 text-slate-800 min-h-screen">
+<body class="text-slate-800 min-h-screen">
   <!-- Login Screen -->
   <div id="pinScreen" class="min-h-screen flex items-center justify-center px-4">
-    <div class="bg-white rounded-2xl shadow-md border border-slate-200 p-6 w-full max-w-sm">
-      <h1 class="text-xl font-bold text-slate-800">Admin Panel Pemilihan</h1>
-      <p class="text-xs text-slate-500 mt-1 mb-4">Masukkan PIN Admin untuk mengakses rekap & kelola data.</p>
+    <div class="bg-white/90 backdrop-blur-md rounded-3xl shadow-xl shadow-blue-900/5 border border-white p-7 w-full max-w-sm">
+      <div class="flex items-center gap-3 mb-5">
+        <img src="logo-bps.png" alt="Logo BPS" class="h-9 w-auto object-contain" />
+        <div class="leading-tight">
+          <h1 class="text-lg font-extrabold text-slate-900">Admin Panel</h1>
+          <p class="text-[11px] text-slate-500">Apresiasi Pegawai BPS Prov. Kep. Bangka Belitung</p>
+        </div>
+      </div>
+      <p class="text-xs text-slate-500 mb-3">Masukkan PIN Admin untuk mengakses rekap dan kelola data.</p>
       <input id="pinInput" type="password" placeholder="PIN Admin"
-        class="w-full border border-slate-300 rounded-xl px-4 py-2.5 mb-3 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 mb-3 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500" />
       <button id="pinBtn" onclick="loadAdmin()"
-        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-xl transition">
+        class="w-full bg-gradient-to-r from-blue-700 to-blue-600 hover:from-blue-800 hover:to-blue-700 text-white font-bold py-3 rounded-2xl shadow-md shadow-blue-600/20 transition">
         Masuk Admin
       </button>
-      <p id="pinErr" class="text-red-600 text-xs mt-2 hidden"></p>
+      <p id="pinErr" class="text-red-600 text-xs mt-2.5 hidden"></p>
     </div>
   </div>
 
   <!-- Dashboard -->
-  <div id="dashboard" class="hidden max-w-6xl mx-auto px-4 py-6">
-    <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
-      <div>
-        <h1 class="text-2xl font-bold text-slate-800">Dashboard Admin — Pegawai Ter-</h1>
-        <p id="summaryText" class="text-sm text-slate-500"></p>
-      </div>
-      <div class="flex gap-2">
-        <button onclick="refreshData()" class="bg-white border border-slate-300 hover:bg-slate-50 px-4 py-2 rounded-xl text-sm font-semibold">Refresh</button>
-        <button onclick="resetAllVotes()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl text-sm font-semibold">Reset Semua Vote</button>
-      </div>
-    </div>
-
-    <!-- Tabs -->
-    <div class="flex flex-wrap gap-2 mb-5">
-      <button onclick="switchTab('kat')" id="tab-kat" class="tab-btn bg-blue-600 text-white px-4 py-2 rounded-xl text-sm font-semibold">Rekap per Kategori</button>
-      <button onclick="switchTab('peg')" id="tab-peg" class="tab-btn bg-white text-slate-700 border border-slate-200 px-4 py-2 rounded-xl text-sm font-semibold">Rekap per Pegawai</button>
-      <button onclick="switchTab('mon')" id="tab-mon" class="tab-btn bg-white text-slate-700 border border-slate-200 px-4 py-2 rounded-xl text-sm font-semibold">Monitoring Partisipasi</button>
-      <button onclick="switchTab('crud')" id="tab-crud" class="tab-btn bg-white text-slate-700 border border-slate-200 px-4 py-2 rounded-xl text-sm font-semibold">Kelola Data (CRUD)</button>
-    </div>
-
-    <!-- TAB 1: REKAP PER KATEGORI -->
-    <div id="panel-kat" class="tab-panel bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
-      <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
-        <h2 class="font-bold text-lg">Peringkat Lengkap per Kategori</h2>
-        <select id="filterKategori" onchange="renderRekapKategori()" class="border border-slate-300 rounded-xl px-3 py-2 text-sm"></select>
-      </div>
-      <div id="rekapKategoriBody" class="overflow-x-auto"></div>
-    </div>
-
-    <!-- TAB 2: REKAP PER PEGAWAI -->
-    <div id="panel-peg" class="tab-panel hidden bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
-      <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
-        <h2 class="font-bold text-lg">Perolehan "Ter-" per Pegawai</h2>
-        <input id="searchRekapPegawai" oninput="renderRekapPegawai()" placeholder="Cari nama pegawai..."
-          class="border border-slate-300 rounded-xl px-3 py-2 text-sm w-64" />
-      </div>
-      <div id="rekapPegawaiBody" class="space-y-3"></div>
-    </div>
-
-    <!-- TAB 3: MONITORING PARTISIPASI -->
-    <div id="panel-mon" class="tab-panel hidden space-y-4">
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
-        <div class="flex flex-wrap items-center justify-between gap-3 mb-3">
-          <div>
-            <h2 class="font-bold text-lg">Progres Partisipasi</h2>
-            <p id="monStats" class="text-sm text-slate-600"></p>
+  <div id="dashboard" class="hidden">
+    <!-- Top Navbar -->
+    <header class="sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-slate-200/70">
+      <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <img src="logo-bps.png" alt="Logo BPS" class="h-9 w-auto object-contain" />
+          <div class="leading-tight">
+            <h1 class="text-base sm:text-lg font-extrabold text-slate-900">Admin — Apresiasi Pegawai BPS Provinsi Kepulauan Bangka Belitung</h1>
+            <p id="summaryText" class="text-xs text-slate-500"></p>
           </div>
-          <button onclick="copyBelumMemilih()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-sm font-semibold">
-            Copy Daftar Belum Memilih (WA)
-          </button>
         </div>
-        <div class="w-full bg-slate-200 rounded-full h-3">
-          <div id="monBar" class="bg-blue-600 h-3 rounded-full transition-all" style="width:0%"></div>
+        <div class="flex gap-2">
+          <button onclick="refreshData()" class="bg-white border border-slate-200 hover:bg-slate-50 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-slate-700 shadow-sm">Refresh</button>
+          <button onclick="resetAllVotes()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl text-xs sm:text-sm font-bold shadow-sm">Reset Semua Vote</button>
+        </div>
+      </div>
+    </header>
+
+    <div class="max-w-6xl mx-auto px-4 py-6">
+      <!-- Tabs -->
+      <div class="flex flex-wrap gap-2 mb-5">
+        <button onclick="switchTab('kat')" id="tab-kat" class="tab-btn bg-blue-700 text-white px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">Rekap per Kategori</button>
+        <button onclick="switchTab('peg')" id="tab-peg" class="tab-btn bg-white/90 text-slate-700 border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-bold">Rekap per Pegawai</button>
+        <button onclick="switchTab('mon')" id="tab-mon" class="tab-btn bg-white/90 text-slate-700 border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-bold">Monitoring Partisipasi</button>
+        <button onclick="switchTab('crud')" id="tab-crud" class="tab-btn bg-white/90 text-slate-700 border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-bold">Kelola Data (CRUD)</button>
+      </div>
+
+      <!-- TAB 1: REKAP PER KATEGORI -->
+      <div id="panel-kat" class="tab-panel bg-white/90 backdrop-blur-md rounded-3xl shadow-sm border border-slate-200/70 p-6">
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+          <h2 class="font-extrabold text-lg text-slate-900">Peringkat Lengkap per Kategori</h2>
+          <select id="filterKategori" onchange="renderRekapKategori()" class="bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm font-medium"></select>
+        </div>
+        <div id="rekapKategoriBody" class="overflow-x-auto"></div>
+      </div>
+
+      <!-- TAB 2: REKAP PER PEGAWAI -->
+      <div id="panel-peg" class="tab-panel hidden bg-white/90 backdrop-blur-md rounded-3xl shadow-sm border border-slate-200/70 p-6">
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+          <div>
+            <h2 class="font-extrabold text-lg text-slate-900">Perolehan Apresiasi per Pegawai</h2>
+            <p class="text-xs text-slate-500">Diurutkan berdasarkan abjad nama pegawai (A–Z)</p>
+          </div>
+          <input id="searchRekapPegawai" oninput="renderRekapPegawai()" placeholder="Cari nama pegawai..."
+            class="bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm w-64" />
+        </div>
+        <div id="rekapPegawaiBody" class="space-y-3"></div>
+      </div>
+
+      <!-- TAB 3: MONITORING PARTISIPASI -->
+      <div id="panel-mon" class="tab-panel hidden space-y-4">
+        <div class="bg-white/90 backdrop-blur-md rounded-3xl shadow-sm border border-slate-200/70 p-6">
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-3">
+            <div>
+              <h2 class="font-extrabold text-lg text-slate-900">Progres Partisipasi</h2>
+              <p id="monStats" class="text-sm text-slate-600"></p>
+            </div>
+            <button onclick="copyBelumMemilih()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm">
+              Copy Daftar Belum Memilih
+            </button>
+          </div>
+          <div class="w-full bg-slate-200/80 rounded-full h-3">
+            <div id="monBar" class="bg-gradient-to-r from-blue-600 to-teal-500 h-3 rounded-full transition-all" style="width:0%"></div>
+          </div>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="bg-white/90 backdrop-blur-md rounded-3xl shadow-sm border border-slate-200/70 p-6">
+            <h3 class="font-extrabold text-red-600 mb-3">Belum Memilih (<span id="countBelum">0</span>)</h3>
+            <div id="listBelum" class="divide-y divide-slate-100 max-h-96 overflow-y-auto text-sm"></div>
+          </div>
+          <div class="bg-white/90 backdrop-blur-md rounded-3xl shadow-sm border border-slate-200/70 p-6">
+            <h3 class="font-extrabold text-emerald-600 mb-3">Sudah Memilih (<span id="countSudah">0</span>)</h3>
+            <div id="listSudah" class="divide-y divide-slate-100 max-h-96 overflow-y-auto text-sm"></div>
+          </div>
         </div>
       </div>
 
-      <div class="grid md:grid-cols-2 gap-4">
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
-          <h3 class="font-bold text-red-600 mb-3">Belum Memilih (<span id="countBelum">0</span>)</h3>
-          <div id="listBelum" class="divide-y divide-slate-100 max-h-96 overflow-y-auto text-sm"></div>
+      <!-- TAB 4: CRUD -->
+      <div id="panel-crud" class="tab-panel hidden space-y-6">
+        <!-- CRUD Kategori -->
+        <div class="bg-white/90 backdrop-blur-md rounded-3xl shadow-sm border border-slate-200/70 p-6">
+          <h2 class="font-extrabold text-lg text-slate-900 mb-3">Kelola Kategori Apresiasi</h2>
+          <div class="grid md:grid-cols-4 gap-2 mb-4">
+            <input id="katId" placeholder="ID (mis: K01)" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm" />
+            <input id="katNama" placeholder="Nama Kategori (mis: Ter-Ramah)" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm" />
+            <input id="katDesk" placeholder="Deskripsi singkat (opsional)" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm" />
+            <button onclick="addKategori()" class="bg-blue-700 hover:bg-blue-800 text-white rounded-xl px-4 py-2 text-sm font-bold">+ Tambah Kategori</button>
+          </div>
+          <div id="crudKategoriList" class="overflow-x-auto"></div>
         </div>
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
-          <h3 class="font-bold text-emerald-600 mb-3">Sudah Memilih (<span id="countSudah">0</span>)</h3>
-          <div id="listSudah" class="divide-y divide-slate-100 max-h-96 overflow-y-auto text-sm"></div>
-        </div>
-      </div>
-    </div>
 
-    <!-- TAB 4: CRUD -->
-    <div id="panel-crud" class="tab-panel hidden space-y-6">
-      <!-- CRUD Kategori -->
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
-        <h2 class="font-bold text-lg mb-3">Kelola Kategori "Ter-"</h2>
-        <div class="grid md:grid-cols-4 gap-2 mb-4">
-          <input id="katId" placeholder="ID (mis: K01)" class="border rounded-xl px-3 py-2 text-sm" />
-          <input id="katNama" placeholder="Nama Kategori (mis: Teramah)" class="border rounded-xl px-3 py-2 text-sm" />
-          <input id="katDesk" placeholder="Deskripsi singkat (opsional)" class="border rounded-xl px-3 py-2 text-sm" />
-          <button onclick="addKategori()" class="bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-4 py-2 text-sm font-semibold">+ Tambah Kategori</button>
+        <!-- CRUD Pegawai -->
+        <div class="bg-white/90 backdrop-blur-md rounded-3xl shadow-sm border border-slate-200/70 p-6">
+          <h2 class="font-extrabold text-lg text-slate-900 mb-3">Kelola Pegawai (Tambah Dummy / Edit / Hapus)</h2>
+          <div class="grid md:grid-cols-3 gap-2 mb-4">
+            <input id="pegNip" placeholder="NIP 9 Digit / 5 Digit Dummy" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm" />
+            <input id="pegNama" placeholder="Nama Lengkap Pegawai" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm" />
+            <button onclick="addPegawai()" class="bg-blue-700 hover:bg-blue-800 text-white rounded-xl px-4 py-2 text-sm font-bold">+ Tambah Pegawai</button>
+          </div>
+          <input id="searchCrudPegawai" oninput="renderCrudPegawai()" placeholder="Filter nama atau NIP..." class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-sm mb-3 w-64" />
+          <div id="crudPegawaiList" class="overflow-x-auto max-h-80 overflow-y-auto"></div>
         </div>
-        <div id="crudKategoriList" class="overflow-x-auto"></div>
-      </div>
 
-      <!-- CRUD Pegawai -->
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
-        <h2 class="font-bold text-lg mb-3">Kelola Pegawai (Tambah Dummy / Edit / Hapus)</h2>
-        <div class="grid md:grid-cols-3 gap-2 mb-4">
-          <input id="pegNip" placeholder="NIP 9 Digit / 5 Digit Dummy" class="border rounded-xl px-3 py-2 text-sm" />
-          <input id="pegNama" placeholder="Nama Lengkap Pegawai" class="border rounded-xl px-3 py-2 text-sm" />
-          <button onclick="addPegawai()" class="bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-4 py-2 text-sm font-semibold">+ Tambah Pegawai</button>
+        <!-- CRUD Edit Vote -->
+        <div class="bg-white/90 backdrop-blur-md rounded-3xl shadow-sm border border-slate-200/70 p-6">
+          <h2 class="font-extrabold text-lg text-slate-900 mb-3">Edit Data Suara Masuk</h2>
+          <input id="searchCrudVotes" oninput="renderCrudVotes()" placeholder="Cari pemilih atau terpilih..." class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-sm mb-3 w-64" />
+          <div id="crudVotesList" class="overflow-x-auto max-h-80 overflow-y-auto"></div>
         </div>
-        <input id="searchCrudPegawai" oninput="renderCrudPegawai()" placeholder="Filter nama/NIP..." class="border rounded-xl px-3 py-1.5 text-sm mb-3 w-64" />
-        <div id="crudPegawaiList" class="overflow-x-auto max-h-80 overflow-y-auto"></div>
-      </div>
-
-      <!-- CRUD Edit Vote -->
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
-        <h2 class="font-bold text-lg mb-3">Edit Data Suara Masuk</h2>
-        <input id="searchCrudVotes" oninput="renderCrudVotes()" placeholder="Cari pemilih / terpilih..." class="border rounded-xl px-3 py-1.5 text-sm mb-3 w-64" />
-        <div id="crudVotesList" class="overflow-x-auto max-h-80 overflow-y-auto"></div>
       </div>
     </div>
   </div>
@@ -187,9 +220,9 @@
     document.querySelectorAll(".tab-panel").forEach(el => el.classList.add("hidden"));
     document.getElementById("panel-" + id).classList.remove("hidden");
     document.querySelectorAll(".tab-btn").forEach(btn => {
-      btn.className = "tab-btn bg-white text-slate-700 border border-slate-200 px-4 py-2 rounded-xl text-sm font-semibold";
+      btn.className = "tab-btn bg-white/90 text-slate-700 border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-bold";
     });
-    document.getElementById("tab-" + id).className = "tab-btn bg-blue-600 text-white px-4 py-2 rounded-xl text-sm font-semibold";
+    document.getElementById("tab-" + id).className = "tab-btn bg-blue-700 text-white px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm";
   }
 
   function renderAll() {
@@ -225,22 +258,22 @@
       const katVotes = DB.votes.filter(v => v.idKategori === kat.id);
       const counts = {};
       katVotes.forEach(v => { counts[v.namaTerpilih] = (counts[v.namaTerpilih] || 0) + 1; });
-      const ranked = Object.entries(counts).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+      const ranked = Object.entries(counts).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], "id"));
 
       const rows = ranked.length
         ? ranked.map(([nama, jml], idx) => {
             const pct = ((jml / katVotes.length) * 100).toFixed(1);
             const medal = idx === 0 ? "🥇" : idx === 1 ? "🥈" : idx === 2 ? "🥉" : `#${idx + 1}`;
             return `<tr class="border-b border-slate-100">
-              <td class="py-2 px-3 font-semibold w-16">${medal}</td>
-              <td class="py-2 px-3">${esc(nama)}</td>
-              <td class="py-2 px-3 text-right font-bold text-blue-700">${jml} suara <span class="text-xs font-normal text-slate-400">(${pct}%)</span></td>
+              <td class="py-2.5 px-3 font-bold w-16">${medal}</td>
+              <td class="py-2.5 px-3 font-medium">${esc(nama)}</td>
+              <td class="py-2.5 px-3 text-right font-bold text-blue-700">${jml} suara <span class="text-xs font-normal text-slate-400">(${pct}%)</span></td>
             </tr>`;
           }).join("")
         : `<tr><td colspan="3" class="py-3 px-3 text-slate-400 text-sm">Belum ada suara masuk.</td></tr>`;
 
       return `<div class="mb-6">
-        <h3 class="font-bold text-blue-800 bg-blue-50 px-3 py-2 rounded-lg mb-2">${esc(kat.nama)} <span class="text-xs font-normal text-slate-500">(${katVotes.length} suara)</span></h3>
+        <h3 class="font-extrabold text-blue-800 bg-blue-50/80 border border-blue-100 px-4 py-2.5 rounded-xl mb-2">${esc(kat.nama)} <span class="text-xs font-medium text-slate-500">(${katVotes.length} suara)</span></h3>
         <table class="w-full text-sm"><tbody>${rows}</tbody></table>
       </div>`;
     }).join("");
@@ -262,9 +295,9 @@
       .map(([nama, kats]) => ({
         nama,
         total: Object.values(kats).reduce((a, b) => a + b, 0),
-        kats: Object.entries(kats).sort((a, b) => b[1] - a[1])
+        kats: Object.entries(kats).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], "id"))
       }))
-      .sort((a, b) => b.total - a.total || a.nama.localeCompare(b.nama));
+      .sort((a, b) => a.nama.localeCompare(b.nama, "id"));
 
     const el = document.getElementById("rekapPegawaiBody");
     if (!entries.length) {
@@ -273,13 +306,13 @@
     }
 
     el.innerHTML = entries.map(item => `
-      <div class="border border-slate-200 rounded-xl p-4">
-        <div class="flex items-center justify-between mb-2">
-          <span class="font-bold text-slate-800">${esc(item.nama)}</span>
-          <span class="text-xs font-bold bg-blue-100 text-blue-700 px-2.5 py-1 rounded-full">Total ${item.total} suara</span>
+      <div class="border border-slate-200/80 bg-white rounded-2xl p-4">
+        <div class="flex items-center justify-between mb-2.5">
+          <span class="font-bold text-slate-900">${esc(item.nama)}</span>
+          <span class="text-xs font-bold bg-blue-50 text-blue-700 border border-blue-100 px-3 py-1 rounded-full">Total ${item.total} suara</span>
         </div>
         <div class="flex flex-wrap gap-2">
-          ${item.kats.map(([k, n]) => `<span class="text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded-lg">${esc(k)}: <b>${n}</b></span>`).join("")}
+          ${item.kats.map(([k, n]) => `<span class="text-xs bg-slate-50 border border-slate-200/70 text-slate-700 px-2.5 py-1 rounded-lg">${esc(k)}: <b>${n}</b></span>`).join("")}
         </div>
       </div>
     `).join("");
@@ -296,17 +329,17 @@
     document.getElementById("countSudah").textContent = sudah.length;
 
     document.getElementById("listBelum").innerHTML = belum.map((p, i) => `
-      <div class="py-2 flex justify-between items-center">
+      <div class="py-2.5 flex justify-between items-center">
         <span>${i + 1}. ${esc(p.nama)}</span>
         <span class="text-xs font-mono text-slate-400">${esc(p.nip5)}</span>
       </div>
     `).join("") || `<p class="text-slate-400 py-2">Semua sudah memilih!</p>`;
 
     document.getElementById("listSudah").innerHTML = sudah.map((p, i) => `
-      <div class="py-2 flex justify-between items-center gap-2">
+      <div class="py-2.5 flex justify-between items-center gap-2">
         <span>${i + 1}. ${esc(p.nama)}</span>
         <button data-nip5="${esc(p.nip5)}" data-nama="${esc(p.nama)}" onclick="resetUserVote(this)"
-          class="text-xs bg-amber-100 hover:bg-amber-200 text-amber-800 px-2.5 py-1 rounded-lg font-semibold">Reset Vote</button>
+          class="text-xs bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 px-2.5 py-1 rounded-lg font-bold">Reset Vote</button>
       </div>
     `).join("") || `<p class="text-slate-400 py-2">Belum ada yang memilih.</p>`;
   }
@@ -314,7 +347,7 @@
   function copyBelumMemilih() {
     const belum = DB.pegawai.filter(p => p.status.toLowerCase() !== "sudah");
     if (!belum.length) return alert("Semua pegawai sudah memilih!");
-    const text = `*Reminder Pemilihan Pegawai Ter-*\nBerikut daftar yang belum memilih (${belum.length} orang):\n` +
+    const text = `*Reminder Apresiasi Pegawai BPS Provinsi Kepulauan Bangka Belitung*\nBerikut daftar yang belum memilih (${belum.length} orang):\n` +
       belum.map((p, i) => `${i + 1}. ${p.nama}`).join("\n");
     navigator.clipboard.writeText(text).then(() => alert("Daftar berhasil disalin ke clipboard!"));
   }
@@ -343,8 +376,8 @@
           <td class="py-2 font-semibold">${esc(k.nama)}</td>
           <td class="py-2 text-slate-500">${esc(k.deskripsi)}</td>
           <td class="py-2 text-right space-x-1">
-            <button onclick="editKategori(${idx})" class="text-xs bg-slate-100 hover:bg-slate-200 px-2.5 py-1 rounded-lg">Edit</button>
-            <button onclick="deleteKategori(${idx})" class="text-xs bg-red-100 hover:bg-red-200 text-red-700 px-2.5 py-1 rounded-lg">Hapus</button>
+            <button onclick="editKategori(${idx})" class="text-xs bg-slate-100 hover:bg-slate-200 px-2.5 py-1 rounded-lg font-semibold">Edit</button>
+            <button onclick="deleteKategori(${idx})" class="text-xs bg-red-50 hover:bg-red-100 text-red-700 px-2.5 py-1 rounded-lg font-semibold">Hapus</button>
           </td>
         </tr>
       `).join("")}</tbody></table>`;
@@ -391,8 +424,8 @@
           <td class="py-2">${esc(p.nama)}</td>
           <td class="py-2 text-xs">${esc(p.status || "Belum")}</td>
           <td class="py-2 text-right space-x-1">
-            <button onclick="editPegawai(${p.idx})" class="text-xs bg-slate-100 hover:bg-slate-200 px-2.5 py-1 rounded-lg">Edit</button>
-            <button onclick="deletePegawai(${p.idx})" class="text-xs bg-red-100 hover:bg-red-200 text-red-700 px-2.5 py-1 rounded-lg">Hapus</button>
+            <button onclick="editPegawai(${p.idx})" class="text-xs bg-slate-100 hover:bg-slate-200 px-2.5 py-1 rounded-lg font-semibold">Edit</button>
+            <button onclick="deletePegawai(${p.idx})" class="text-xs bg-red-50 hover:bg-red-100 text-red-700 px-2.5 py-1 rounded-lg font-semibold">Hapus</button>
           </td>
         </tr>
       `).join("")}</tbody></table>`;
@@ -440,9 +473,9 @@
           <td class="py-2 text-xs text-slate-400">${esc(v.timestamp)}</td>
           <td class="py-2">${esc(v.namaPemilih)}</td>
           <td class="py-2 text-xs font-semibold">${esc(v.namaKat)}</td>
-          <td class="py-2 text-blue-700">${esc(v.namaTerpilih)}</td>
+          <td class="py-2 text-blue-700 font-medium">${esc(v.namaTerpilih)}</td>
           <td class="py-2 text-right">
-            <button onclick="editVote(${v.idx})" class="text-xs bg-slate-100 hover:bg-slate-200 px-2.5 py-1 rounded-lg">Edit</button>
+            <button onclick="editVote(${v.idx})" class="text-xs bg-slate-100 hover:bg-slate-200 px-2.5 py-1 rounded-lg font-semibold">Edit</button>
           </td>
         </tr>
       `).join("") || `<tr><td colspan="5" class="py-3 text-slate-400">Belum ada data suara.</td></tr>`}</tbody></table>`;
