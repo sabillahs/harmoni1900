@@ -4,7 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Apresiasi Pegawai BPS Provinsi Kepulauan Bangka Belitung</title>
-  <link rel="icon" type="image/png" href="logo-bps.png" />
+  <link rel="icon" type="image/png" href="./logo-bps.png?v=2" />
+  <link rel="shortcut icon" type="image/png" href="./logo-bps.png?v=2" />
+  <link rel="apple-touch-icon" href="./logo-bps.png?v=2" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -12,91 +14,104 @@
   <style>
     body {
       font-family: 'Plus Jakarta Sans', sans-serif;
-      background-color: #f8fbff;
+      background-color: #fffaf5;
       background-image:
-        radial-gradient(at 0% 0%, rgba(186, 230, 253, 0.45) 0px, transparent 50%),
-        radial-gradient(at 100% 0%, rgba(167, 243, 208, 0.35) 0px, transparent 50%),
-        radial-gradient(at 100% 100%, rgba(191, 219, 254, 0.35) 0px, transparent 50%),
-        radial-gradient(at 0% 100%, rgba(209, 250, 229, 0.35) 0px, transparent 50%);
+        radial-gradient(at 0% 0%, rgba(254, 215, 170, 0.55) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(254, 205, 211, 0.45) 0px, transparent 48%),
+        radial-gradient(at 100% 100%, rgba(253, 230, 138, 0.4) 0px, transparent 50%),
+        radial-gradient(at 0% 100%, rgba(255, 237, 213, 0.65) 0px, transparent 50%);
       background-attachment: fixed;
+    }
+    .card-active {
+      z-index: 50 !important;
+      border-color: #fb923c !important;
+      box-shadow: 0 20px 35px -12px rgba(234, 88, 12, 0.16) !important;
     }
   </style>
 </head>
-<body class="text-slate-800 min-h-screen flex flex-col">
+<body class="text-slate-800 min-h-screen flex flex-col selection:bg-orange-200 selection:text-orange-900">
   <!-- Top Navbar -->
-  <header class="sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-slate-200/70">
-    <div class="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <img src="logo-bps.png" alt="Logo BPS" class="h-9 w-auto object-contain" />
-        <div class="leading-tight">
-          <p class="text-sm font-extrabold text-slate-900 tracking-tight">Apresiasi Pegawai</p>
-          <p class="text-[11px] text-slate-500 font-medium">BPS Provinsi Kepulauan Bangka Belitung</p>
+  <header class="sticky top-0 z-40 bg-white/85 backdrop-blur-md border-b border-orange-100/80">
+    <div class="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between gap-2">
+      <div class="flex items-center gap-3 min-w-0">
+        <div class="p-1.5 bg-orange-50 rounded-xl border border-orange-100 shrink-0">
+          <img src="./logo-bps.png?v=2" alt="Logo BPS" class="h-7 w-auto object-contain" />
+        </div>
+        <div class="leading-tight truncate">
+          <p class="text-sm font-extrabold text-slate-900 tracking-tight truncate">Apresiasi Pegawai</p>
+          <p class="text-[11px] text-orange-700/80 font-semibold truncate">BPS Provinsi Kepulauan Bangka Belitung</p>
         </div>
       </div>
-      <span id="autosavePill" class="hidden text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/80 px-3 py-1 rounded-full">
-        ● Tersimpan otomatis
+      <span id="autosavePill" class="hidden shrink-0 text-[11px] sm:text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-1 rounded-full">
+        ● Tersimpan
       </span>
+    </div>
+    <!-- Sticky Progress Bar (muncul saat voting) -->
+    <div id="topProgressWrap" class="hidden w-full bg-orange-100/70 h-1.5">
+      <div id="topProgressBar" class="bg-gradient-to-r from-orange-500 via-amber-500 to-rose-500 h-1.5 transition-all duration-300" style="width:0%"></div>
     </div>
   </header>
 
-  <main class="flex-1 max-w-3xl w-full mx-auto px-4 py-8">
+  <main class="flex-1 max-w-3xl w-full mx-auto px-4 py-7 sm:py-10">
     <!-- Hero Header -->
     <div class="mb-7">
-      <div class="flex items-center gap-2 mb-2">
-        <span class="h-0.5 w-7 bg-gradient-to-r from-blue-600 to-teal-500 rounded-full"></span>
-        <span class="text-xs font-bold uppercase tracking-widest text-blue-700">BPS Provinsi Kepulauan Bangka Belitung</span>
+      <div class="inline-flex items-center gap-2 bg-white/85 border border-orange-200/80 text-orange-700 px-3.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider shadow-sm mb-3">
+        <span class="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
+        BPS Provinsi Kepulauan Bangka Belitung
       </div>
-      <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 leading-tight">
-        Apresiasi Pegawai <span class="bg-gradient-to-r from-blue-700 to-teal-600 bg-clip-text text-transparent">BPS Provinsi Kepulauan Bangka Belitung</span>
+      <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight text-slate-900 leading-tight">
+        Apresiasi Pegawai <span class="bg-gradient-to-r from-orange-600 via-amber-500 to-rose-500 bg-clip-text text-transparent">BPS Provinsi Kepulauan Bangka Belitung</span>
       </h1>
-      <p class="text-sm text-slate-500 mt-2">
-        Pilih rekan kerja terbaik di setiap kategori. Pilihan Anda tersimpan otomatis dan hanya dapat dikirim 1 kali.
+      <p class="text-sm text-slate-600 mt-2.5 leading-relaxed">
+        Pilih rekan kerja terbaik di setiap kategori. Setiap pilihan langsung tersimpan otomatis dan hanya dapat dikirim 1 kali.
       </p>
     </div>
 
     <!-- Login Card -->
-    <div id="loginCard" class="bg-white/90 backdrop-blur-md rounded-3xl shadow-lg shadow-blue-900/5 border border-white p-6 sm:p-8">
-      <label class="block text-sm font-bold text-slate-800 mb-1.5">Masukkan 5 Digit Terakhir NIP Lama Anda</label>
-      <p class="text-xs text-slate-500 mb-4">Contoh: jika NIP lama <code class="bg-slate-100 px-1.5 py-0.5 rounded font-semibold text-slate-700">340012345</code>, cukup ketik <code class="bg-slate-100 px-1.5 py-0.5 rounded font-semibold text-slate-700">12345</code>.</p>
-      <div class="flex flex-col sm:flex-row gap-2.5">
+    <div id="loginCard" class="bg-white rounded-3xl shadow-xl shadow-orange-900/5 border border-orange-100 p-6 sm:p-8">
+      <label class="block text-sm sm:text-base font-extrabold text-slate-900 mb-1">Masukkan 5 Digit Terakhir NIP Lama Anda</label>
+      <p class="text-xs text-slate-500 mb-5">
+        Contoh: jika NIP lama <code class="bg-orange-50 text-orange-800 border border-orange-100 px-1.5 py-0.5 rounded-md font-bold">340012345</code>, cukup ketik <code class="bg-orange-50 text-orange-800 border border-orange-100 px-1.5 py-0.5 rounded-md font-bold">12345</code>.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-3">
         <input id="nipInput" type="text" inputmode="numeric" maxlength="5" placeholder="12345"
-          class="flex-1 bg-slate-50/80 border border-slate-200 rounded-2xl px-4 py-3.5 text-lg tracking-widest font-mono focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500 transition" />
+          class="flex-1 bg-orange-50/40 border border-orange-200 rounded-2xl px-4 py-3.5 text-lg tracking-[0.25em] font-mono font-bold text-slate-800 focus:bg-white focus:outline-none focus:ring-4 focus:ring-orange-500/15 focus:border-orange-500 transition" />
         <button id="loginBtn" onclick="doLogin()"
-          class="bg-gradient-to-r from-blue-700 to-blue-600 hover:from-blue-800 hover:to-blue-700 text-white font-bold px-7 py-3.5 rounded-2xl shadow-md shadow-blue-600/20 transition">
+          class="bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-600 hover:to-rose-600 active:scale-[0.99] text-white font-bold px-8 py-3.5 rounded-2xl shadow-lg shadow-orange-500/25 transition">
           Masuk
         </button>
       </div>
-      <p id="loginErr" class="text-red-600 text-sm mt-3 hidden"></p>
+      <p id="loginErr" class="text-rose-600 text-sm font-medium mt-3 hidden"></p>
     </div>
 
     <!-- Already Voted Card -->
-    <div id="doneCard" class="hidden bg-white/90 backdrop-blur-md rounded-3xl shadow-lg shadow-emerald-900/5 border border-emerald-100 p-8 text-center">
-      <div class="w-16 h-16 bg-emerald-50 text-emerald-600 border border-emerald-200 rounded-2xl flex items-center justify-center mx-auto text-3xl font-bold">✓</div>
-      <h2 class="text-2xl font-extrabold text-slate-900 mt-4">Terima Kasih, <span id="doneName" class="text-blue-700"></span>!</h2>
-      <p class="text-slate-500 text-sm mt-2">Suara Anda sudah tercatat di sistem. Sampai jumpa di pengumuman hasil!</p>
+    <div id="doneCard" class="hidden bg-white rounded-3xl shadow-xl shadow-orange-900/5 border border-emerald-100 p-8 sm:p-10 text-center">
+      <div class="w-16 h-16 bg-gradient-to-br from-emerald-400 to-teal-500 text-white rounded-2xl flex items-center justify-center mx-auto text-3xl font-bold shadow-lg shadow-emerald-500/25">✓</div>
+      <h2 class="text-2xl font-extrabold text-slate-900 mt-5">Terima Kasih, <span id="doneName" class="text-orange-600"></span>!</h2>
+      <p class="text-slate-500 text-sm mt-2 max-w-md mx-auto">Suara Anda sudah tercatat di sistem. Sampai jumpa di pengumuman hasil Apresiasi Pegawai!</p>
     </div>
 
     <!-- Voting Form -->
-    <div id="voteCard" class="hidden space-y-5">
-      <div class="bg-white/90 backdrop-blur-md rounded-2xl shadow-sm border border-slate-200/70 p-4 flex flex-wrap items-center justify-between gap-3">
-        <div class="flex items-center gap-3">
-          <div id="voterInitial" class="w-10 h-10 rounded-xl bg-blue-50 text-blue-700 font-extrabold flex items-center justify-center text-sm">P</div>
-          <div>
-            <p class="text-[11px] uppercase tracking-wider font-semibold text-slate-400">Pemilih Terverifikasi</p>
-            <p id="voterName" class="font-bold text-slate-800 text-sm sm:text-base"></p>
+    <div id="voteCard" class="hidden space-y-4">
+      <div class="bg-white rounded-2xl shadow-sm border border-orange-100 p-4 flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-3 min-w-0">
+          <div id="voterInitial" class="w-11 h-11 rounded-2xl bg-gradient-to-br from-orange-500 to-amber-500 text-white font-extrabold flex items-center justify-center text-base shadow-md shadow-orange-500/20 shrink-0">P</div>
+          <div class="min-w-0">
+            <p class="text-[11px] uppercase tracking-wider font-bold text-orange-600">Pemilih Terverifikasi</p>
+            <p id="voterName" class="font-extrabold text-slate-900 text-sm sm:text-base truncate"></p>
           </div>
         </div>
-        <span id="progressBadge" class="text-xs font-bold bg-blue-50 text-blue-700 border border-blue-100 px-3.5 py-1.5 rounded-full">0 / 0 terisi</span>
+        <span id="progressBadge" class="text-xs font-extrabold bg-orange-50 text-orange-700 border border-orange-200 px-3.5 py-1.5 rounded-full">0 / 0 terisi</span>
       </div>
 
       <div id="categoriesContainer" class="space-y-4"></div>
 
-      <div class="pt-2 pb-10">
+      <div class="pt-3 pb-12">
         <button id="submitBtn" onclick="confirmSubmit()"
-          class="w-full bg-gradient-to-r from-blue-700 to-indigo-600 hover:from-blue-800 hover:to-indigo-700 disabled:from-slate-300 disabled:to-slate-300 text-white font-bold py-4 rounded-2xl shadow-lg shadow-blue-700/20 transition">
+          class="w-full bg-gradient-to-r from-orange-500 via-amber-500 to-rose-500 hover:from-orange-600 hover:via-amber-600 hover:to-rose-600 active:scale-[0.99] disabled:from-slate-300 disabled:via-slate-300 disabled:to-slate-300 text-white font-extrabold py-4 rounded-2xl shadow-xl shadow-orange-500/25 transition text-base">
           Kirim Semua Pilihan
         </button>
-        <p id="submitErr" class="text-red-600 text-sm text-center mt-2.5 hidden"></p>
+        <p id="submitErr" class="text-rose-600 text-sm font-medium text-center mt-3 hidden"></p>
       </div>
     </div>
   </main>
@@ -219,6 +234,7 @@
 
       document.getElementById("voterName").textContent = currentUser.nama;
       document.getElementById("voterInitial").textContent = (currentUser.nama || "P").trim().charAt(0).toUpperCase();
+      document.getElementById("topProgressWrap").classList.remove("hidden");
       renderCategories();
       if (Object.keys(selectedChoices).length > 0) {
         const pill = document.getElementById("autosavePill");
@@ -245,24 +261,24 @@
     allKategori.forEach((kat, idx) => {
       const savedVal = selectedChoices[kat.id] || "";
       const card = document.createElement("div");
-      card.className = "bg-white/90 backdrop-blur-md rounded-2xl shadow-sm border border-slate-200/70 p-5 relative transition hover:border-blue-200";
+      card.className = "bg-white rounded-3xl shadow-sm border border-orange-100/90 p-5 sm:p-6 relative transition-all duration-200 hover:border-orange-300";
       card.innerHTML = `
-        <div class="flex items-start justify-between gap-2 mb-3">
+        <div class="flex items-start justify-between gap-2 mb-3.5">
           <div>
-            <span class="text-[11px] font-bold uppercase tracking-wider text-blue-600">Kategori ${idx + 1}</span>
-            <h3 class="text-lg font-extrabold text-slate-900">${esc(kat.nama)}</h3>
-            ${kat.deskripsi ? `<p class="text-xs text-slate-500 mt-0.5">${esc(kat.deskripsi)}</p>` : ""}
+            <span class="inline-block text-[11px] font-extrabold uppercase tracking-wider text-orange-600 bg-orange-50 px-2.5 py-0.5 rounded-lg mb-1">Kategori ${idx + 1}</span>
+            <h3 class="text-lg font-extrabold text-slate-900 leading-snug">${esc(kat.nama)}</h3>
+            ${kat.deskripsi ? `<p class="text-xs text-slate-500 mt-1 leading-relaxed">${esc(kat.deskripsi)}</p>` : ""}
           </div>
-          <span id="check-${esc(kat.id)}" class="${savedVal ? "" : "hidden"} shrink-0 text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-1 rounded-full">Terpilih</span>
+          <span id="check-${esc(kat.id)}" class="${savedVal ? "" : "hidden"} shrink-0 text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1 rounded-full">✓ Terpilih</span>
         </div>
         <div class="relative">
           <input type="text" autocomplete="off"
             id="search-${esc(kat.id)}"
             value="${esc(savedVal)}"
             placeholder="Ketik untuk mencari nama pegawai..."
-            class="w-full bg-slate-50/80 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500 transition" />
+            class="w-full bg-orange-50/35 border border-orange-200/80 rounded-2xl px-4 py-3 text-sm font-medium text-slate-800 focus:bg-white focus:outline-none focus:ring-4 focus:ring-orange-500/15 focus:border-orange-500 transition" />
           <div id="list-${esc(kat.id)}"
-            class="hidden absolute z-20 left-0 right-0 mt-1.5 bg-white border border-slate-200 rounded-xl shadow-xl shadow-slate-900/10 max-h-56 overflow-y-auto divide-y divide-slate-100">
+            class="hidden absolute z-50 left-0 right-0 mt-2 bg-white border border-orange-200 rounded-2xl shadow-2xl shadow-orange-950/15 max-h-60 overflow-y-auto divide-y divide-orange-50">
           </div>
         </div>
       `;
@@ -272,24 +288,35 @@
       const listEl = card.querySelector(`#list-${CSS.escape(kat.id)}`);
       const checkEl = card.querySelector(`#check-${CSS.escape(kat.id)}`);
 
+      function openList() {
+        document.querySelectorAll(".card-active").forEach(el => el.classList.remove("card-active"));
+        card.classList.add("card-active");
+        listEl.classList.remove("hidden");
+      }
+
+      function closeList() {
+        listEl.classList.add("hidden");
+        card.classList.remove("card-active");
+      }
+
       function renderOptions(keyword) {
         const kw = keyword.toLowerCase();
         const filtered = candidates.filter(p => p.nama.toLowerCase().includes(kw));
         listEl.innerHTML = "";
         if (!filtered.length) {
-          listEl.innerHTML = `<div class="px-4 py-3 text-xs text-slate-400">Nama tidak ditemukan</div>`;
+          listEl.innerHTML = `<div class="px-4 py-3.5 text-xs text-slate-400">Nama tidak ditemukan</div>`;
           return;
         }
         filtered.forEach(p => {
           const item = document.createElement("button");
           item.type = "button";
-          item.className = "w-full text-left px-4 py-2.5 text-sm hover:bg-blue-50 hover:text-blue-700 transition";
+          item.className = "w-full text-left px-4 py-3 text-sm font-medium text-slate-700 hover:bg-orange-50 hover:text-orange-700 active:bg-orange-100 transition";
           item.textContent = p.nama;
           item.addEventListener("mousedown", (ev) => {
             ev.preventDefault();
             selectedChoices[kat.id] = p.nama;
             inputEl.value = p.nama;
-            listEl.classList.add("hidden");
+            closeList();
             checkEl.classList.remove("hidden");
             updateProgress();
             saveDraft();
@@ -300,7 +327,7 @@
 
       inputEl.addEventListener("focus", () => {
         renderOptions(inputEl.value);
-        listEl.classList.remove("hidden");
+        openList();
       });
       inputEl.addEventListener("input", () => {
         if (selectedChoices[kat.id] && inputEl.value !== selectedChoices[kat.id]) {
@@ -310,10 +337,10 @@
           saveDraft();
         }
         renderOptions(inputEl.value);
-        listEl.classList.remove("hidden");
+        openList();
       });
       inputEl.addEventListener("blur", () => {
-        setTimeout(() => listEl.classList.add("hidden"), 150);
+        setTimeout(() => closeList(), 160);
       });
     });
 
@@ -323,7 +350,9 @@
   function updateProgress() {
     const filled = Object.keys(selectedChoices).length;
     const total = allKategori.length;
+    const pct = total ? Math.round((filled / total) * 100) : 0;
     document.getElementById("progressBadge").textContent = `${filled} / ${total} terisi`;
+    document.getElementById("topProgressBar").style.width = `${pct}%`;
   }
 
   async function confirmSubmit() {
@@ -368,6 +397,7 @@
       }
 
       clearDraft(currentUser.nip5);
+      document.getElementById("topProgressWrap").classList.add("hidden");
       document.getElementById("voteCard").classList.add("hidden");
       document.getElementById("doneName").textContent = currentUser.nama;
       document.getElementById("doneCard").classList.remove("hidden");
