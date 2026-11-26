@@ -311,7 +311,8 @@
         <div class="flex items-start justify-between gap-2 mb-3.5">
           <div>
             <span class="inline-block text-[11px] font-extrabold uppercase tracking-wider text-orange-600 bg-orange-50 px-2.5 py-0.5 rounded-lg mb-1">Kategori ${idx + 1}</span>
-            <h3 class="text-lg font-extrabold text-slate-900 leading-snug">${esc(kat.nama)}</h3>${kat.deskripsi ? `<p class="text-xs text-slate-500 mt-1 leading-relaxed">${esc(kat.deskripsi)}</p>` : ""}
+            <h3 class="text-lg font-extrabold text-slate-900 leading-snug">${esc(kat.nama)}</h3>
+            ${kat.deskripsi ? `<p class="text-xs text-slate-500 mt-1 leading-relaxed">${esc(kat.deskripsi)}</p>` : ""}
           </div>
           <span id="check-${esc(kat.id)}" class="${savedVal ? "" : "hidden"} shrink-0 text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1 rounded-full">✓ Terpilih</span>
         </div>
@@ -329,7 +330,8 @@
       container.appendChild(card);
 
       const inputEl = card.querySelector(`#search-${CSS.escape(kat.id)}`);
-      const listEl = card.querySelector(`#list-${CSS.escape(kat.id)}`); const checkEl = card.querySelector(`#check-${CSS.escape(kat.id)}`);
+      const listEl = card.querySelector(`#list-${CSS.escape(kat.id)}`);
+      const checkEl = card.querySelector(`#check-${CSS.escape(kat.id)}`);
 
       function openList() {
         document.querySelectorAll(".card-active").forEach(el => el.classList.remove("card-active"));
@@ -394,7 +396,8 @@
     const filled = Object.keys(selectedChoices).length;
     const total = allKategori.length;
     const pct = total ? Math.round((filled / total) * 100) : 0;
-    document.getElementById("progressBadge").textContent = `${filled} / ${total} terisi`; document.getElementById("topProgressBar").style.width = `${pct}%`;
+    document.getElementById("progressBadge").textContent = `${filled} / ${total} terisi`;
+    document.getElementById("topProgressBar").style.width = `${pct}%`;
   }
 
   async function confirmSubmit() {
@@ -403,4 +406,53 @@
 
     const missing = allKategori.filter(k => !selectedChoices[k.id]);
     if (missing.length > 0) {
-      errEl.textContent = `Masih ada ${missing
+      errEl.textContent = `Masih ada ${missing.length} kategori yang belum dipilih (misal: ${missing[0].nama}).`;
+      errEl.classList.remove("hidden");
+      return;
+    }
+
+    if (!confirm("Yakin ingin mengirim semua pilihan? Setelah dikirim, suara tidak dapat diubah.")) return;
+
+    const btn = document.getElementById("submitBtn");
+    btn.disabled = true;
+    btn.textContent = "Menyimpan suara...";
+
+    try {
+      const choices = allKategori.map(k => ({
+        idKategori: k.id,
+        namaTerpilih: selectedChoices[k.id]
+      }));
+
+      const res = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({
+          action: "submit_vote",
+          nip5: currentUser.nip5,
+          choices: choices
+        })
+      });
+      const data = await res.json();
+      if (!data.ok) {
+        errEl.textContent = data.error || "Gagal menyimpan suara.";
+        errEl.classList.remove("hidden");
+        btn.disabled = false;
+        btn.textContent = "Kirim Semua Pilihan";
+        return;
+      }
+
+      clearDraft(currentUser.nip5);
+      document.getElementById("topProgressWrap").classList.add("hidden");
+      document.getElementById("voteCard").classList.add("hidden");
+      document.getElementById("doneName").textContent = currentUser.nama;
+      document.getElementById("doneCard").classList.remove("hidden");
+    } catch (e) {
+      errEl.textContent = "Terjadi kesalahan jaringan. Coba kirim ulang.";
+      errEl.classList.remove("hidden");
+      btn.disabled = false;
+      btn.textContent = "Kirim Semua Pilihan";
+    }
+  }
+</script>
+</body>
+</html>
