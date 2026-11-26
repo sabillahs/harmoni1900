@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Apresiasi Pegawai BPS Provinsi Kepulauan Bangka Belitung</title>
+  <title>Hidden Stars: Apresiasi Pegawai BPS Provinsi Kepulauan Bangka Belitung</title>
   <link rel="icon" type="image/png" href="./logo-bps.png?v=2" />
   <link rel="shortcut icon" type="image/png" href="./logo-bps.png?v=2" />
   <link rel="apple-touch-icon" href="./logo-bps.png?v=2" />
@@ -27,9 +27,29 @@
       border-color: #fb923c !important;
       box-shadow: 0 20px 35px -12px rgba(234, 88, 12, 0.16) !important;
     }
+    @keyframes twinkle {
+      0%, 100% {
+        opacity: 0.15;
+        transform: scale(0.82);
+      }
+      50% {
+        opacity: 0.65;
+        transform: scale(1.12);
+      }
+    }
+    .star-sparkle {
+      position: absolute;
+      animation-name: twinkle;
+      animation-timing-function: ease-in-out;
+      animation-iteration-count: infinite;
+      pointer-events: none;
+    }
   </style>
 </head>
-<body class="text-slate-800 min-h-screen flex flex-col selection:bg-orange-200 selection:text-orange-900">
+<body class="text-slate-800 min-h-screen flex flex-col selection:bg-orange-200 selection:text-orange-900 relative overflow-x-hidden">
+  <!-- Background Bintang Kelap-Kelip (Khusus Halaman Login) -->
+  <div id="loginStars" class="fixed inset-0 pointer-events-none overflow-hidden z-0" aria-hidden="true"></div>
+
   <!-- Top Navbar -->
   <header class="sticky top-0 z-40 bg-white/85 backdrop-blur-md border-b border-orange-100/80">
     <div class="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between gap-2">
@@ -38,7 +58,7 @@
           <img src="./logo-bps.png?v=2" alt="Logo BPS" class="h-7 w-auto object-contain" />
         </div>
         <div class="leading-tight truncate">
-          <p class="text-sm font-extrabold text-slate-900 tracking-tight truncate">Apresiasi Pegawai</p>
+          <p class="text-sm font-extrabold text-slate-900 tracking-tight truncate">Hidden Stars</p>
           <p class="text-[11px] text-orange-700/80 font-semibold truncate">BPS Provinsi Kepulauan Bangka Belitung</p>
         </div>
       </div>
@@ -52,15 +72,11 @@
     </div>
   </header>
 
-  <main class="flex-1 max-w-3xl w-full mx-auto px-4 py-7 sm:py-10">
+  <main class="relative z-10 flex-1 max-w-3xl w-full mx-auto px-4 py-7 sm:py-10">
     <!-- Hero Header -->
     <div class="mb-7">
-      <div class="inline-flex items-center gap-2 bg-white/85 border border-orange-200/80 text-orange-700 px-3.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider shadow-sm mb-3">
-        <span class="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
-        BPS Provinsi Kepulauan Bangka Belitung
-      </div>
       <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight text-slate-900 leading-tight">
-        Apresiasi Pegawai <span class="bg-gradient-to-r from-orange-600 via-amber-500 to-rose-500 bg-clip-text text-transparent">BPS Provinsi Kepulauan Bangka Belitung</span>
+        <span class="bg-gradient-to-r from-orange-600 via-amber-500 to-rose-500 bg-clip-text text-transparent">Hidden Stars:</span> Apresiasi Pegawai BPS Provinsi Kepulauan Bangka Belitung
       </h1>
       <p class="text-sm text-slate-600 mt-2.5 leading-relaxed">
         Pilih rekan kerja terbaik di setiap kategori. Setiap pilihan langsung tersimpan otomatis dan hanya dapat dikirim 1 kali.
@@ -68,7 +84,7 @@
     </div>
 
     <!-- Login Card -->
-    <div id="loginCard" class="bg-white rounded-3xl shadow-xl shadow-orange-900/5 border border-orange-100 p-6 sm:p-8">
+    <div id="loginCard" class="bg-white/95 backdrop-blur-sm rounded-3xl shadow-xl shadow-orange-900/5 border border-orange-100 p-6 sm:p-8">
       <label class="block text-sm sm:text-base font-extrabold text-slate-900 mb-1">Masukkan 5 Digit Terakhir NIP Lama Anda</label>
       <p class="text-xs text-slate-500 mb-5">
         Contoh: jika NIP lama <code class="bg-orange-50 text-orange-800 border border-orange-100 px-1.5 py-0.5 rounded-md font-bold">340012345</code>, cukup ketik <code class="bg-orange-50 text-orange-800 border border-orange-100 px-1.5 py-0.5 rounded-md font-bold">12345</code>.
@@ -88,7 +104,7 @@
     <div id="doneCard" class="hidden bg-white rounded-3xl shadow-xl shadow-orange-900/5 border border-emerald-100 p-8 sm:p-10 text-center">
       <div class="w-16 h-16 bg-gradient-to-br from-emerald-400 to-teal-500 text-white rounded-2xl flex items-center justify-center mx-auto text-3xl font-bold shadow-lg shadow-emerald-500/25">✓</div>
       <h2 class="text-2xl font-extrabold text-slate-900 mt-5">Terima Kasih, <span id="doneName" class="text-orange-600"></span>!</h2>
-      <p class="text-slate-500 text-sm mt-2 max-w-md mx-auto">Suara Anda sudah tercatat di sistem. Sampai jumpa di pengumuman hasil Apresiasi Pegawai!</p>
+      <p class="text-slate-500 text-sm mt-2 max-w-md mx-auto">Suara Anda sudah tercatat di sistem. Sampai jumpa di pengumuman hasil Hidden Stars!</p>
     </div>
 
     <!-- Voting Form -->
@@ -125,6 +141,32 @@
   let allKategori = [];
   let selectedChoices = {}; // { idKategori: namaTerpilih }
   let saveTimer = null;
+
+  function initLoginStars() {
+    const container = document.getElementById("loginStars");
+    if (!container) return;
+    const stars = [
+      { top: "10%", left: "8%", size: 14, dur: 4.2, delay: 0.2, color: "#f59e0b" },
+      { top: "16%", left: "86%", size: 18, dur: 5.1, delay: 1.1, color: "#fb923c" },
+      { top: "24%", left: "22%", size: 10, dur: 3.8, delay: 2.0, color: "#f97316" },
+      { top: "30%", left: "74%", size: 12, dur: 4.6, delay: 0.6, color: "#fbbf24" },
+      { top: "42%", left: "6%", size: 16, dur: 5.4, delay: 1.8, color: "#fb7185" },
+      { top: "48%", left: "92%", size: 12, dur: 4.0, delay: 0.9, color: "#f59e0b" },
+      { top: "62%", left: "14%", size: 11, dur: 4.9, delay: 2.4, color: "#fb923c" },
+      { top: "68%", left: "82%", size: 16, dur: 5.6, delay: 0.4, color: "#fbbf24" },
+      { top: "78%", left: "28%", size: 13, dur: 4.3, delay: 1.5, color: "#fb7185" },
+      { top: "84%", left: "70%", size: 10, dur: 3.9, delay: 2.8, color: "#f59e0b" },
+      { top: "88%", left: "10%", size: 15, dur: 5.0, delay: 1.2, color: "#fb923c" },
+      { top: "18%", left: "52%", size: 9, dur: 4.4, delay: 0.7, color: "#fbbf24" },
+      { top: "74%", left: "50%", size: 12, dur: 5.2, delay: 2.1, color: "#f59e0b" },
+      { top: "55%", left: "95%", size: 10, dur: 4.7, delay: 1.6, color: "#fb923c" }
+    ];
+    container.innerHTML = stars.map(s => `
+      <svg class="star-sparkle" style="top:${s.top};left:${s.left};width:${s.size}px;height:${s.size}px;animation-duration:${s.dur}s;animation-delay:${s.delay}s;" viewBox="0 0 24 24" fill="${s.color}">
+        <path d="M12 0L14.6 9.4L24 12L14.6 14.6L12 24L9.4 14.6L0 12L9.4 9.4L12 0Z"/>
+      </svg>
+    `).join("");
+  }
 
   function esc(str) {
     return String(str || "")
@@ -167,6 +209,7 @@
   }
 
   window.addEventListener("DOMContentLoaded", () => {
+    initLoginStars();
     const params = new URLSearchParams(window.location.search);
     const nipParam = (params.get("nip") || "").trim().slice(-5);
     if (nipParam.length === 5) {
@@ -206,6 +249,7 @@
       allKategori = data.kategori;
 
       document.getElementById("loginCard").classList.add("hidden");
+      document.getElementById("loginStars").classList.add("hidden");
 
       if (currentUser.sudahVote) {
         clearDraft(currentUser.nip5);
@@ -218,6 +262,7 @@
         errEl.textContent = "Belum ada kategori yang tersedia. Hubungi panitia.";
         errEl.classList.remove("hidden");
         document.getElementById("loginCard").classList.remove("hidden");
+        document.getElementById("loginStars").classList.remove("hidden");
         return;
       }
 
@@ -266,8 +311,7 @@
         <div class="flex items-start justify-between gap-2 mb-3.5">
           <div>
             <span class="inline-block text-[11px] font-extrabold uppercase tracking-wider text-orange-600 bg-orange-50 px-2.5 py-0.5 rounded-lg mb-1">Kategori ${idx + 1}</span>
-            <h3 class="text-lg font-extrabold text-slate-900 leading-snug">${esc(kat.nama)}</h3>
-            ${kat.deskripsi ? `<p class="text-xs text-slate-500 mt-1 leading-relaxed">${esc(kat.deskripsi)}</p>` : ""}
+            <h3 class="text-lg font-extrabold text-slate-900 leading-snug">${esc(kat.nama)}</h3>${kat.deskripsi ? `<p class="text-xs text-slate-500 mt-1 leading-relaxed">${esc(kat.deskripsi)}</p>` : ""}
           </div>
           <span id="check-${esc(kat.id)}" class="${savedVal ? "" : "hidden"} shrink-0 text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1 rounded-full">✓ Terpilih</span>
         </div>
@@ -285,8 +329,7 @@
       container.appendChild(card);
 
       const inputEl = card.querySelector(`#search-${CSS.escape(kat.id)}`);
-      const listEl = card.querySelector(`#list-${CSS.escape(kat.id)}`);
-      const checkEl = card.querySelector(`#check-${CSS.escape(kat.id)}`);
+      const listEl = card.querySelector(`#list-${CSS.escape(kat.id)}`); const checkEl = card.querySelector(`#check-${CSS.escape(kat.id)}`);
 
       function openList() {
         document.querySelectorAll(".card-active").forEach(el => el.classList.remove("card-active"));
@@ -351,8 +394,7 @@
     const filled = Object.keys(selectedChoices).length;
     const total = allKategori.length;
     const pct = total ? Math.round((filled / total) * 100) : 0;
-    document.getElementById("progressBadge").textContent = `${filled} / ${total} terisi`;
-    document.getElementById("topProgressBar").style.width = `${pct}%`;
+    document.getElementById("progressBadge").textContent = `${filled} / ${total} terisi`; document.getElementById("topProgressBar").style.width = `${pct}%`;
   }
 
   async function confirmSubmit() {
@@ -361,53 +403,4 @@
 
     const missing = allKategori.filter(k => !selectedChoices[k.id]);
     if (missing.length > 0) {
-      errEl.textContent = `Masih ada ${missing.length} kategori yang belum dipilih (misal: ${missing[0].nama}).`;
-      errEl.classList.remove("hidden");
-      return;
-    }
-
-    if (!confirm("Yakin ingin mengirim semua pilihan? Setelah dikirim, suara tidak dapat diubah.")) return;
-
-    const btn = document.getElementById("submitBtn");
-    btn.disabled = true;
-    btn.textContent = "Menyimpan suara...";
-
-    try {
-      const choices = allKategori.map(k => ({
-        idKategori: k.id,
-        namaTerpilih: selectedChoices[k.id]
-      }));
-
-      const res = await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify({
-          action: "submit_vote",
-          nip5: currentUser.nip5,
-          choices: choices
-        })
-      });
-      const data = await res.json();
-      if (!data.ok) {
-        errEl.textContent = data.error || "Gagal menyimpan suara.";
-        errEl.classList.remove("hidden");
-        btn.disabled = false;
-        btn.textContent = "Kirim Semua Pilihan";
-        return;
-      }
-
-      clearDraft(currentUser.nip5);
-      document.getElementById("topProgressWrap").classList.add("hidden");
-      document.getElementById("voteCard").classList.add("hidden");
-      document.getElementById("doneName").textContent = currentUser.nama;
-      document.getElementById("doneCard").classList.remove("hidden");
-    } catch (e) {
-      errEl.textContent = "Terjadi kesalahan jaringan. Coba kirim ulang.";
-      errEl.classList.remove("hidden");
-      btn.disabled = false;
-      btn.textContent = "Kirim Semua Pilihan";
-    }
-  }
-</script>
-</body>
-</html>
+      errEl.textContent = `Masih ada ${missing
